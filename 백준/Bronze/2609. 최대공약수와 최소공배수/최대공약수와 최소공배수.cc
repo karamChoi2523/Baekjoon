@@ -1,8 +1,18 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 
-int solutionA(int a, int b);
-void solutionB(int a, int b, int gcf);
+int solutionGCD(int a, int b)
+{
+	if (b == 0)
+		return a;
+	else
+		return solutionGCD(b, a % b);
+}
+
+int solutionLCM(int a, int b)
+{
+	return a * b / solutionGCD(a, b);
+}
 
 int main()
 {
@@ -10,22 +20,6 @@ int main()
 
 	scanf("%d %d", &a, &b);
 
-	int gcf = solutionA(a, b);
-	solutionB(a, b, gcf);
-}
-
-int solutionA(int a, int b)
-{
-	int min = a > b ? b : a;
-
-	for (int i = min; i>=1 ; i--)
-		if (a % i == 0 && b % i == 0) {
-			printf("%d\n", i);
-			return i;
-		}
-}
-
-void solutionB(int a, int b, int gcf)
-{
-	printf("%d\n", gcf * (a / gcf) * (b / gcf));
+	printf("%d\n", solutionGCD(a, b));
+	printf("%d\n", solutionLCM(a, b));
 }
