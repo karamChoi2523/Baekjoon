@@ -1,13 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 
-void testPrint(int* a, int size)
-{
-	for (int i = 0; i < size; i++)
-		printf("%d ", a[i]);
-	printf("\n");
-}
-void selectionSortNew(int A[], int left, int n)
+void sorting(int* A, int left, int n)
 {
 	int i, j;
 	int maxIndex;
@@ -23,40 +17,40 @@ void selectionSortNew(int A[], int left, int n)
 		A[n - i - 1] = temp;
 	}
 
+	for (i = 0; i < n; i++)
+		printf("%d ", A[i]);
+	printf("\n");
 }
-int main(void)
+
+int main()
 {
 	int n;
-	int a[10000];
-	int i;
-	int pivot;
-	int min;
-	int temp;
+	int i, j;
+	int arr[10000];
 
 	scanf("%d", &n);
-	for (int i = 0; i < n; i++)
-		scanf("%d", &a[i]);
+	
+	for (i = 0; i < n; i++)
+		scanf("%d", &arr[i]);
 
-	for (i = n - 1; i > 0; i--) {
-		if (a[i] > a[i - 1])	//뒤에 있는 것이 작아야 내림차순
+	for (i = n - 1; i > 0; i--)
+		if (arr[i - 1] < arr[i])
 			break;
-	}
-	if (i==0) {
+	if (i == 0) {
 		printf("-1\n");
 		return 0;
 	}
-	pivot = i - 1;
-	min = pivot + 1;
-	for (i = pivot + 1; i < n; i++) {
-		if (a[i] > a[pivot] && a[i] <= a[min])
-			min = i;
-	}
-	//swap
-	temp = a[min];
-	a[min] = a[pivot];
-	a[pivot] = temp;
-	selectionSortNew(a, pivot + 1, n);
-	testPrint(a, n);
 
-	return 0;
+	int pivot = i - 1;
+	int min = pivot + 1;
+
+	for (i = pivot + 1; i < n; i++)
+		if (arr[i] > arr[pivot] && arr[i] <= arr[min])
+			min = i;
+
+	int tmp = arr[min];
+	arr[min] = arr[pivot];
+	arr[pivot] = tmp;
+
+	sorting(arr, pivot+1, n);
 }
