@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class B2839 {
@@ -10,22 +9,23 @@ public class B2839 {
 		
 		int[] dp = new int[5001];
 		
-		dp[3] = 1;
-		dp[4] = -1;
-		dp[5] = 1;
-		
-		for(int i=5;i<n+1;i++) {
+		if(n>=3)
+			dp[3] = 1;
+		if(n>=5)
+			dp[5] = 1;
+	
+		for(int i=6;i<n+1;i++) {
 			if(i%5==0)
-				dp[i] = i/5;
-			else if(i%5==1 || i%5==3)
-				dp[i] = i/5+1;
-			else if(i%5==2 || i%5==4)
-				dp[i] = i/5+2;
-			
-			if(i==4 || i==7)
-				dp[i]=-1;
+				dp[i] = dp[i-5]+1;
+			else if(i%3==0)
+				dp[i] = dp[i-3]+1;
+			else if (dp[i - 3] != 0 && dp[i - 5] != 0)
+				dp[i] = Math.min(dp[i-3], dp[i-5])+1;
 		}
-		
+		if (dp[n] == 0) {
+			System.out.println("-1");
+			return;
+		}
 		System.out.println(dp[n]);
 	}
 
