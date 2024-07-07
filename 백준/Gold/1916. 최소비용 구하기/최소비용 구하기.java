@@ -23,7 +23,7 @@ public class Main {
 	}
 	
 	static ArrayList<Node>[] graph;
-	static boolean[] visited;
+	//static boolean[] visited;
 	static int[] dist;
 	static int start, end;
 	
@@ -34,7 +34,7 @@ public class Main {
 		int m = Integer.valueOf(br.readLine());
 		
 		graph = new ArrayList[n+1];
-		visited = new boolean[n+1];
+		//visited = new boolean[n+1];
 		dist = new int[n+1];
 		
 		for(int i=0;i<n+1;i++)
@@ -68,12 +68,12 @@ public class Main {
 		
 		while(!q.isEmpty()) {
 			Node curr = q.poll();
-			
+			/*
 			if(visited[curr.node])
 				continue;
 			
 			visited[curr.node] = true;
-			
+			*/
 			if(dist[curr.node] < curr.cost)
 				continue;
 			
