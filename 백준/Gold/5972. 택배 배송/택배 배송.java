@@ -25,7 +25,6 @@ public class Main {
 	}
 	static ArrayList<Node>[] graph;
 	static int[] dist;
-	static boolean[] visited;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));		
@@ -48,7 +47,6 @@ public class Main {
 			graph[a].add(new Node(b, cost));
 			graph[b].add(new Node(a, cost));
 		}
-		visited = new boolean[n+1];
 		dist = new int[n+1];
 		Arrays.fill(dist, 50000001);
 		dijkstra();
@@ -62,22 +60,20 @@ public class Main {
 		q.add(new Node(1, 0));
 		
 		while(!q.isEmpty()) {
-			Node current = q.poll();
+			Node curr = q.poll();
 			
-			if(visited[current.node])
+			if(dist[curr.node] < curr.cost)
 				continue;
 			
-			visited[current.node] = true;
-			
-			for(int i=0;i<graph[current.node].size();i++) {
-				Node next = graph[current.node].get(i);
-				if(dist[next.node] > dist[current.node]+next.cost) {
-					dist[next.node] = dist[current.node]+next.cost;
-					q.add(new Node(next.node, dist[next.node]));
+			for(Node next : graph[curr.node]) {
+				int cost = next.cost+curr.cost;
+				
+				if(cost < dist[next.node]) {
+					dist[next.node] = cost;
+					q.add(new Node(next.node, cost));
 				}
 			}
 		}
-		
 	}
 
 }
