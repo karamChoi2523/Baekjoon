@@ -6,32 +6,32 @@ import java.io.OutputStreamWriter;
 
 public class Main {
 	public static int min = Integer.MAX_VALUE;
+    static int[] dp;
 	
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		 BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
 		 Integer n = Integer.parseInt(bf.readLine());
-		 
-		 BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-		 
-		 dfs(n, 0);
-		 
-		 System.out.println(min);
-		 
-		 bw.flush();
-		 bw.close();
-	}
-	static void dfs(int x, int cnt) {
-		if(cnt>min) return;
-        if(x==1 && cnt<min) {
-			min = cnt;
-			return;
-		}
-		
-		if(x%3==0)
-			dfs(x/3, cnt+1);
-		if(x%2==0)
-			dfs(x/2, cnt+1);
-		dfs(x-1, cnt+1);
+		 dp=new int[n+1];
+        
+       
+        dp[1]=0;
+        if(n>1)dp[2]=1;
+        if(n>2)dp[3]=1;
+        
+        for(int i=4;i<n+1;i++){
+            dp[i] = dp[i-1]+1;
+            if(i%3==0)
+                dp[i]=Math.min(dp[i],dp[i/3]+1);
+            if(i%2==0)
+                dp[i]=Math.min(dp[i],dp[i/2]+1);
+            }
+        
+       
+         
+        System.out.println(dp[n]);
+        
 		
 	}
+	
+	
 }
