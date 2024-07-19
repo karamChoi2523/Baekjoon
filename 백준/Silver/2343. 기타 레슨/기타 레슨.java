@@ -17,11 +17,13 @@ public class Main {
 		list = new int[n];
 		
 		int total = 0;
+		int max = 0;
 		for(int i=0;i<n;i++) {
 			list[i] = Integer.valueOf(st.nextToken());
 			total += list[i];
+			max = Math.max(max, list[i]);
 		}
-		int answer = binarySearch(0, total);
+		int answer = binarySearch(max, total);
 		System.out.println(answer);
 	}
 
@@ -29,24 +31,16 @@ public class Main {
 		while(start <= end) {
 			int mid = (start+end)/2;	// 블루레이 크기
 			
-			int cnt=0;
+			int cnt=1;
 			int sum=0;
-			boolean check = false;
+			
 			for(int i=0;i<list.length;i++) {
-				if(cnt > m)
-					break;
-				
-				sum += list[i];
-				if(sum >= mid) {
-					i--;
+				if(sum+list[i] > mid) {
 					cnt++;
 					sum=0;
-					check = true;
-				}else
-					check = false;
+				}
+				sum += list[i];
 			}
-			if(!check)
-				cnt++;
 			
 			if(cnt > m)
 				start = mid+1;
@@ -55,7 +49,7 @@ public class Main {
 			
 		}
 		
-		return end;
+		return start;
 	}
 
 }
