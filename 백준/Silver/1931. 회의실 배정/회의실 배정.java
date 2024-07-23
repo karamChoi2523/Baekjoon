@@ -1,34 +1,41 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.StringTokenizer;
-//그리디 알고리즘 - 활동 선택 문제
-public class Main {
-	static int[][] board;
 
-	public static void main(String[] args) throws NumberFormatException, IOException {
-		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-		int n = Integer.valueOf(bf.readLine());
+public class Main {
+	static class Meeting implements Comparable<Meeting> {
+		int start;
+		int end;
 		
-		board = new int[n][2];
-		
-		for(int i=0;i<n;i++) {
-			StringTokenizer st = new StringTokenizer(bf.readLine());
-			board[i][0]=Integer.valueOf(st.nextToken());
-			board[i][1]=Integer.valueOf(st.nextToken());	
+		public Meeting(int start, int end) {
+			this.start = start;
+			this.end = end;
 		}
-		//종료시간 빨라야 다른 회의 시작
-		Arrays.sort(board, new Comparator<>() {
-			@Override
-			public int compare(int[] o1, int[] o2) {
-				if(o1[1] == o2[1])
-					return o1[0] - o2[0];	//시작 시간 빠른 순
-				return o1[1] - o2[1];
-			}
+
+		@Override
+		public int compareTo(Meeting o) {
+			if(this.end == o.end)
+				return this.start - o.start;
+			return this.end - o.end;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		
+		int n = Integer.valueOf(br.readLine());
+		
+		ArrayList<Meeting> list = new ArrayList<>();
+		for(int i=0;i<n;i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
 			
-		});
+			int a = Integer.valueOf(st.nextToken());
+			int b = Integer.valueOf(st.nextToken());
+			
+			list.add(new Meeting(a, b));
+		}
+		Collections.sort(list);
 		
 		int cnt = 1;
 		Meeting pre = list.get(0);
