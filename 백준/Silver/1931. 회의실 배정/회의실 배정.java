@@ -30,12 +30,13 @@ public class Main {
 			
 		});
 		
-		int cnt=0;
-		int pre=0;	//비교용(이전 회의 종료 시간)
+		int cnt = 1;
+		Meeting pre = list.get(0);
 		
-		for(int i=0;i<n;i++) {
-			if(pre<=board[i][0]) {
-				pre = board[i][1];
+		for(int i=1;i<n;i++) {
+			Meeting curr = list.get(i);
+			if(curr.start >= pre.end) {
+				pre = curr;
 				cnt++;
 			}
 		}
