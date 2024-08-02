@@ -1,4 +1,6 @@
 import java.io.*;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -32,11 +34,35 @@ public class Main {
 			for(int j=0;j<m;j++)
 				if(!visited[i][j] && board[i][j] == 1) {
 					sum = 1;
-					cnt += dfs(i, j);
-					
+					//cnt += dfs(i, j);
+					cnt += bfs(i,j);
 					max = Math.max(max, sum);
 				}
 		System.out.println(cnt+"\n"+max);
+	}
+
+	private static int bfs(int x, int y) {
+		Queue<int[]> q = new LinkedList<>();
+		q.offer(new int[] {x, y});
+		visited[x][y] = true;
+		
+		while(!q.isEmpty()) {
+			int[] curr = q.poll();
+			
+			for(int i=0;i<4;i++) {
+				int nx = curr[0] + dx[i];
+				int ny = curr[1] + dy[i];
+				
+				if(nx>=0 && nx <n && ny>=0 && ny<m)
+					if(!visited[nx][ny] && board[nx][ny]==1) {
+						sum++;
+						visited[nx][ny] = true;
+						q.offer(new int[] {nx, ny});
+					}
+			}
+		}
+		
+		return 1;
 	}
 
 	private static int dfs(int x, int y) {
