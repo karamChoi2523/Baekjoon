@@ -1,70 +1,76 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.StringTokenizer;
 
-public class Main{
-	public static void main(String[] args) throws Exception{
+public class Main {
+	static int[][] board = new int[19][19];
+	static int[] dx = new int[] {0,1,1,-1};
+	static int[] dy = new int[] {1,0,1,1};
+
+	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		char[][] board = new char[19][19];
-		int [][] d = {{0,1}, {1,0}, {1,1}, {-1,1}};
 		
-		//		board 입력받기
 		for (int i = 0; i < 19; i++) {
-			String input = br.readLine();
-			for (int j = 0, index = 0; j < 19; index += 2, j++) {
-				board[i][j] = input.charAt(index);
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			for (int j = 0;j < 19;j++) {
+				board[i][j] = Integer.valueOf(st.nextToken());
 			}
 		}
 		
-		
-		// 모든 칸에 대해 오목 완성 찾기		
-		for (int j = 0; j < 19; j++) {
-			for (int i = 0; i < 19; i++) {
-				if (board[i][j] == '1' || board[i][j] == '2') {
-					for (int k = 0; k < 4; k++) {
-						int ax = i; // x좌표
-						int ay = j; // y좌표
-						int cnt = 1; // 일치하는 바둑알의 개수
-						
-						// 증가하는 방향 탐색
-						while (true) {
-							ax += d[k][0];
-							ay += d[k][1];
-							if ( 0 <= ax && ax < 19 && 0 <= ay && ay < 19) {
-								if(board[i][j] == board[ax][ay])cnt ++;
-								else {
-									break;
-								}
-							} else break;
-						}
-						ax = i;
-						ay = j;
-						
-						// 증가하는 방향의 반대방향 탐색
-						while( true) {
-							ax -= d[k][0];
-							ay -= d[k][1];
-							if ( 0 <= ax && ax < 19 && 0 <= ay && ay < 19) {
-								if(board[i][j] == board[ax][ay])cnt ++;
-								else break;
-
-							} else break;
-						}
-						
-						// 같은 오목눈이 5개라면
-						if (cnt == 5) {
-							System.out.println(board[i][j]);
-							System.out.println((i+1) + " " + (j+1));
-							return;
-						}
-						
-					}
+		for(int j=0;j<19;j++)
+			for(int i=0;i<19;i++) {
+				if(board[i][j]!=0) {
+					boolean check = solution(i, j, board[i][j]);
+					if(check)
+						return;
 				}
 			}
+		
+		System.out.println(0);
+	}
+
+	private static boolean solution(int x, int y, int target) {		
+		for(int i=0;i<4;i++) {
+			int nx = x;
+			int ny = y;
+			int sum=1;
+			
+			while(true) {
+				nx+=dx[i];
+				ny+=dy[i];
+				
+				if(nx>=0 && nx<19 && ny>=0 && ny<19) {
+					if(board[nx][ny] == target)
+						sum++;
+					else
+						break;
+				}else
+					break;
+			}
+			nx = x;
+			ny = y;
+			
+			while(true) {
+				nx-=dx[i];
+				ny-=dy[i];
+				
+				if(nx>=0 && nx<19 && ny>=0 && ny<19) {
+					if(board[nx][ny] == target)
+						sum++;
+					else
+						break;
+				}else
+					break;
+			}
+			
+
+			if(sum==5) {
+				System.out.println(target);
+				System.out.println((x+1)+" "+(y+1));
+				return true;
+			}
 		}
 		
-//		아무도 이기지 않았을 경우
-		System.out.println(0); 	
-		
-		
-	}	
+		return false;
+	}
+
 }
