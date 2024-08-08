@@ -1,26 +1,29 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 
 public class Main {
+    static int[] dp;
+    static int mod = 10007;
+    
 	public static void main(String[] args) throws NumberFormatException, IOException {
-		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-		 Integer col = Integer.parseInt(bf.readLine());
-		 
-		 BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-		 
-		int[] memo = new int[1001];
-		memo[1]=1;
-		memo[2]=2;
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        
+		int n = Integer.valueOf(br.readLine());
+		dp = new int[n+1];
 		
-		for(int i=3;i<=col;i++)
-			memo[i] =  (memo[i-1]+memo[i-2])%10007;
+		solution(n);
 		
-		bw.write(String.valueOf(memo[col]));
-		bw.flush();
-		bw.close();
-	
+		System.out.println(dp[n]%mod);
 	}
+
+	static void solution(int n) {
+		
+		dp[1] = 1;
+		if(n>1) dp[2] = 2;
+		if(n>2) dp[3] = 3;
+		
+		for(int i=4;i<n+1;i++)
+			dp[i] = (dp[i-1]+dp[i-2])%mod;
+		
+	}
+
 }
