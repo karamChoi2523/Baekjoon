@@ -12,9 +12,9 @@ public class Main {
 				t = t.substring(0, t.length()-1);
 			else {
 				t = t.substring(0, t.length()-1);
-				StringBuffer sb = new StringBuffer();
+				StringBuffer sb = new StringBuffer(t);
 				
-				t = sb.append(t).reverse().toString();
+				t = sb.reverse().toString();
 			}
 		}
 		
