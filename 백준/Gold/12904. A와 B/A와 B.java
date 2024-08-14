@@ -1,17 +1,14 @@
 import java.io.*;
 
-public class Main {
-	static String s, t;
-	static boolean check;
-	
+public class Main {	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
-		s= br.readLine();
-		t = br.readLine();
+		String s= br.readLine();
+		String t = br.readLine();
 		
 		while(s.length() < t.length()) {
-			if(t.charAt(t.length()-1) =='A')
+			if(t.endsWith("A"))
 				t = t.substring(0, t.length()-1);
 			else {
 				t = t.substring(0, t.length()-1);
