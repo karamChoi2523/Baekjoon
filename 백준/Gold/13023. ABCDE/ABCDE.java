@@ -6,7 +6,7 @@ import java.util.StringTokenizer;
 
 public class Main {
 	static ArrayList<Integer>[] adj;
-	static Set<Integer> ans = new HashSet<>();
+	static boolean[] visited;
 	static int n;
 	static boolean res = false;
 	
@@ -19,7 +19,6 @@ public class Main {
 		int m = Integer.valueOf(st.nextToken());
 		
 		adj = new ArrayList[n];
-		//visited = new boolean[n][n];
 		
 		for(int i=0;i<n;i++)
 			adj[i] = new ArrayList<>();
@@ -35,31 +34,30 @@ public class Main {
 		}
 		
 		for(int i=0;i<n;i++) {
-			ans.add(i);
-			dfs(i);
-			if(res)
-				break;
-			ans.remove(i);
+			visited = new boolean[n];
+			dfs(i, 1);
+			if(res) {
+				System.out.println(1);
+				return;
+			}
 		}
-		if(res)
-			System.out.println(1);
-		else
-			System.out.println(0);
+		System.out.println(0);
 	}
 
-	private static void dfs(int start) {
-		if(ans.size() == 5) {
+	private static void dfs(int start, int depth) {
+		if(depth == 5) {
 			res = true;
 			return;
 		}
 		
+		visited[start] = true;
+		
 		for(int e : adj[start]) {
-			if(!ans.contains(e)) {
-				ans.add(e);
-				dfs(e);
-				ans.remove(e);
+			if(!visited[e]) {
+				dfs(e, depth+1);
 			}
 		}
+		visited[start] = false;
 	}
 
 }
