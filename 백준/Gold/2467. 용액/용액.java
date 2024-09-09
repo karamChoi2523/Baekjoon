@@ -27,7 +27,6 @@ public class Main {
 			System.out.println(list[n-2]+" "+list[n-1]);
 		else {
 			binarySearch(0, n-1);
-			Arrays.sort(ans);
 			
 			System.out.println(ans[0]+" "+ans[1]);
 		}
