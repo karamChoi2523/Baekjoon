@@ -7,34 +7,23 @@ public class Main {
 		
 		int n = Integer.valueOf(br.readLine());
 		
-		String[] dp = new String[n+6];
-        dp[0] = "SK";
-		dp[1] = "SK";
-		dp[2] = "CY";
-		dp[3] = "SK";	
-		dp[4] = "SK";
+		int[] dp = new int[n+5];
+		dp[1] = 1;
+		dp[2] = 2;
+		dp[3] = 1;		
+		dp[4] = 1;
 		
 		for(int i=5;i<n+1;i++) {
-			String[] checked = new String[3];
-			checked[0] = dp[i-1];
-			checked[1] = dp[i-3];
-			checked[2] = dp[i-4];
-			
-			boolean check = false;
-			for(String e : checked) {
-				if(e.equals("CY")){
-					check = true;
-                    break;
-                }
-			}
-			
-			if(check)
-				dp[i] = "SK";
+			if(dp[i-1]==2 || dp[i-3]==2 || dp[i-4]==2)
+				dp[i] = 1;
 			else
-				dp[i] = "CY";
+				dp[i] = 2;
 		}
 		
-		System.out.println(dp[n]);
+		if(dp[n]==1)
+			System.out.println("SK");
+		else
+			System.out.println("CY");
 	}
 
 }
