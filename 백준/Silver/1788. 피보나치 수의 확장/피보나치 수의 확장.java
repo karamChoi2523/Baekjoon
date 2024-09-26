@@ -6,38 +6,26 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
-		int n = Integer.valueOf(br.readLine());
+		int n = Integer.valueOf(br.readLine()) + 1000000;
 		
-		long[] dp = new long[1000005];	//양수
-		long[] dp2 = new long[1000005];	//음수
+		long[] dp = new long[2000001];
+		dp[1000001] = 1;
 		
-		dp[0] = 0;
-		dp[1] = 1;
-		dp2[0] = 0;
-		dp2[1] = 1;
-		dp2[2] = -1;
-		
-		long res;
-		
-		if(n<0) {
-			int na = Math.abs(n);
-			for(int i=0;i<na;i++)
-				dp2[i+2] = dp2[i]%mod-dp2[i+1]%mod;
-			res = dp2[na]%mod;
-		}else {
-			for(int i=2;i<=n;i++)
-				dp[i] = dp[i-1]%mod+dp[i-2]%mod;
-			res = dp[n]%mod;
-		}
-		
-		if(res<0)
+		if(n<1000000) {
+			for(int i=999999;i>=n;i--)
+				dp[i] = (dp[i+2] - dp[i+1])%mod;
+		}else
+			for(int i=1000002;i<=n;i++)
+				dp[i] = (dp[i-1]+dp[i-2])%mod;
+
+		if(dp[n]<0)
 			System.out.println(-1);
-		else if(res==0)
+		else if(dp[n]==0)
 			System.out.println(0);
 		else
 			System.out.println(1);
 		
-		System.out.println(Math.abs(res));
+		System.out.println(Math.abs(dp[n]));
 	}
 
 }
