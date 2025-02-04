@@ -25,13 +25,15 @@ public class Main {
 		for (int i = 0; i < m; i++) {
 			String s = br.readLine();
 
-			if(binarySearch(s, 0, n - 1))
+			if(binarySearch(s))
 				cnt++;
 		}
 		System.out.println(cnt);
 	}
 	
-	private static boolean binarySearch(String target, int start, int end) {
+	private static boolean binarySearch(String target) {
+		int start = 0, end = n-1;
+		
 		while(start<=end) {
 			int mid = (start+end)/2;
 			String s = first.get(mid);
@@ -41,15 +43,9 @@ public class Main {
 			}
 			
 			if(s.compareTo(target)<0) {
-				if(binarySearch(target, mid+1, end))
-					return true;
-				else
-					return false;
+				start = mid+1;
 			}else
-				if(binarySearch(target, start, mid-1))
-					return true;
-				else
-					return false;
+				end = mid-1;
 		}
 		
 		return false;
