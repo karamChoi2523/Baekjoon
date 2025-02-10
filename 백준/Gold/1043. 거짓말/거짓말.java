@@ -2,81 +2,76 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-
-	static int[] parents;
-	static List<Integer> eList;
-	public static void main(String[] args) throws IOException{
+	static int N,M;
+	static ArrayList<Integer> ktMembers;
+	static int[] parent;
+	static ArrayList<Integer>[] party;
+	
+	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		int n = Integer.parseInt(st.nextToken());
-		int m = Integer.parseInt(st.nextToken());
 		
-		parents = new int[n+1];
-		for(int i=1; i<n+1; i++) {
-			parents[i] = i;
-		}
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.valueOf(st.nextToken());
+		M = Integer.valueOf(st.nextToken());
+		
+		ktMembers = new ArrayList<>();
+		party = new ArrayList[M];
+		parent = new int[N+1];
+		for(int i=0;i<N+1;i++)
+			parent[i] = i;
+		
 		st = new StringTokenizer(br.readLine());
-		int en= Integer.parseInt(st.nextToken());
-		eList = new ArrayList<>();
-		if(en==0) {
-			System.out.println(m);
+		int knowTruth = Integer.valueOf(st.nextToken());
+		if(knowTruth==0) {
+			System.out.println(M);
 			return;
 		}
-		else{
-			for(int i=0; i<en; i++) {
-				eList.add(Integer.parseInt(st.nextToken()));
-			}
-		}
 		
-		List<Integer>[] partyList = new ArrayList[m];
-		for(int i=0; i<m; i++) {
-			partyList[i] = new ArrayList<>();
-		}
-		
-		for(int i=0; i<m; i++) {
+		for(int i=0;i<knowTruth;i++)
+			ktMembers.add(Integer.valueOf(st.nextToken()));
+				
+		for(int i=0;i<M;i++) {
+			party[i] = new ArrayList<>();
 			st = new StringTokenizer(br.readLine());
-			int pn = Integer.parseInt(st.nextToken());
+			int num = Integer.valueOf(st.nextToken());
 			
-			int x = Integer.parseInt(st.nextToken());
-			partyList[i].add(x);
-			for(int j=1; j<pn; j++) {
-				int y = Integer.parseInt(st.nextToken());
-				union(x,y);
-				partyList[i].add(y);
+			int t = Integer.parseInt(st.nextToken());
+			party[i].add(t);
+			for(int j=1;j<num;j++) {
+				int t2 = Integer.valueOf(st.nextToken());
+				party[i].add(t2);
+				unionParent(t, t2);
 			}
 		}
-        
-		int cnt=0;
-		for(int i=0; i<m; i++) {
-			boolean flag = true;
-			for(int num : partyList[i]) {
-				if(eList.contains(find(parents[num]))) {
-                    flag= false;
-                    break;
-    			}
-            }
-			if(flag) {
-				cnt++;
+		
+		int answer=0;
+		for(int i=0;i<M;i++) {
+			boolean check = true;
+			for(int j=0;j<party[i].size();j++) {
+				if(ktMembers.contains(findParent(parent[party[i].get(j)]))) {
+					check = false;
+					break;
+				}
 			}
+			if(check) answer++;
 		}
-		System.out.println(cnt);
-		
+		System.out.println(answer);
 	}
 	
-	static int find(int x) {
-		if(parents[x] ==x ) return x;
-		return find(parents[x]);
-	}
-	
-	static void union(int x, int y) {
-		int rx = find(x);
-		int ry = find(y);
-		if(eList.contains(ry)) {
-			int tmp = rx;
-			rx = ry;
-			ry =tmp;
-		}
+	static private void unionParent(int a, int b) {
+		a = findParent(a);
+		b = findParent(b);
 		
-		parents[ry] = rx;
+		if(ktMembers.contains(b)){
+			int temp = a;
+			a = b;
+			b = temp;
+		}
+		parent[b] = a;
+	}
+	static private int findParent(int x) {
+		if(parent[x] == x) return x;
+		
+		return findParent(parent[x]);
 	}
 }
