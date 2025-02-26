@@ -32,6 +32,7 @@ public class Main {
 		if(depth==N) {
 			if(W[preNode][start]==0) return;
 			ans = Math.min(cost+W[preNode][start], ans);
+            return;
 		}
 		
 		for(int i=0;i<N;i++) {
