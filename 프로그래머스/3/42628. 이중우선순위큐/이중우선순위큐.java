@@ -5,26 +5,28 @@ class Solution {
         int[] answer = {};
         answer = new int[]{0,0};
         
-        PriorityQueue<Integer> minq = new PriorityQueue<>();
-        PriorityQueue<Integer> maxq = new PriorityQueue<>(Collections.reverseOrder());
+        PriorityQueue<Integer> maxQ = new PriorityQueue<>(Collections.reverseOrder());
+        PriorityQueue<Integer> minQ = new PriorityQueue<>();
         
-        for(String s : operations){
-            String[] str = s.split(" ");
+        for(int i=0;i<operations.length;i++){
+            String[] str = operations[i].split(" ");
             
             if(str[0].equals("I")){
-                minq.add(Integer.parseInt(str[1]));
-                maxq.add(Integer.parseInt(str[1]));
-            }else{
-                if(str[1].equals("1") && !maxq.isEmpty())
-                    minq.remove(maxq.poll());
-                else if(str[1].equals("-1") && !minq.isEmpty())
-                    maxq.remove(minq.poll());
+                maxQ.add(Integer.parseInt(str[1]));
+                minQ.add(Integer.parseInt(str[1]));
+            }
+            
+            else{
+                if(str[1].equals("1") && !maxQ.isEmpty())
+                    minQ.remove(maxQ.poll());
+                else if(str[1].equals("-1") && !minQ.isEmpty())
+                    maxQ.remove(minQ.poll());
             }
         }
         
-        if(minq.isEmpty() || maxq.isEmpty()) return answer;
+        if(minQ.isEmpty() || maxQ.isEmpty()) return answer;
         
-        answer = new int[]{maxq.poll(), minq.poll()};
+        else answer = new int[]{maxQ.poll(), minQ.poll()};
         
         return answer;
     }
