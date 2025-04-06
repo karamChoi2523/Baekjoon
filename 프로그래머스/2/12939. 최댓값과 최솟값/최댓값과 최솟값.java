@@ -4,18 +4,20 @@ class Solution {
     public String solution(String s) {
         String answer = "";
         
-        int max = Integer.MIN_VALUE;
+        String[] sArr = s.split(" ");
+        
         int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
         
-        String[] str = s.split(" ");
-        
-        for(String t : str) {
-            int temp = Integer.parseInt(t);
-            max = Math.max(max, temp);
-            min = Math.min(min, temp);
+        for(String e : sArr){
+            int t = Integer.parseInt(e);
+            
+            min = Math.min(min, t);
+            max = Math.max(max, t);
         }
         
         answer = min+" "+max;
+        
         return answer;
     }
 }
