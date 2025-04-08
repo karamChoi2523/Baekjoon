@@ -15,6 +15,12 @@ class Solution {
                 answer++;
         }
         
-        return answer;
+        int i=0,j=people.length-1;
+        for(;i<j;--j){
+            if(people[i]+people[j]<=limit)
+                i++;
+        }
+        
+        return answer = people.length-i;
     }
 }
