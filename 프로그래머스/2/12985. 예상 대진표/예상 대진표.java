@@ -4,23 +4,17 @@ class Solution
     {
         int answer = 0;
 
-        while(true){
+        while(a!=b){
             answer++;
             
             a = getNextNum(a);
             b = getNextNum(b);
-            
-            if(a==b) break;
         }
 
         return answer;
     }
     
     static private int getNextNum(int n){
-        int ans = n/2;
-        
-        if(n%2!=0) ans++;
-        
-        return ans;
+        return n/2+n%2;
     }
 }
