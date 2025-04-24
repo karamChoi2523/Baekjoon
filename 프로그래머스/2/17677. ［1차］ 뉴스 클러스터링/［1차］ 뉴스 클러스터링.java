@@ -22,20 +22,12 @@ class Solution {
         ArrayList<String> res = new ArrayList<>();
         
         for(int i=0;i<s.length()-1;i++){
-            char a = s.charAt(i);
-            char b = s.charAt(i+1);
+            String temp = s.substring(i, i+2);
             
-            if(isAlphabet(a) && isAlphabet(b)){
-                res.add(String.valueOf(a)+String.valueOf(b));
-            }else if(!isAlphabet(b)) i++;
+            if(temp.matches("[a-zA-Z]{2}")) res.add(temp);
         }
         
         return res;
-    }
-    static private boolean isAlphabet(char a){
-        if(a>='A' && a<='Z') return true;
-        
-        return false;
     }
     static private int sol(ArrayList<String> big, ArrayList<String> small){
         System.out.println(big);
