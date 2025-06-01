@@ -15,18 +15,13 @@ class Solution {
 		ans = new ArrayList<>();
 		for(int i=0;i<msg.length();i++) {
 			String key = makeStr(i, msg, dict);
-			if(index!=0) {
+			if(index>i) {
 				i = index-1;
-				index = 0;
 			}
 			dict.put(key, idx++);
 		}
 		
-		answer = new int[ans.size()];
-		for(int i=0;i<ans.size();i++)
-			answer[i] = ans.get(i);
-        
-        return answer;
+		return answer = ans.stream().mapToInt(Integer::intValue).toArray();
     }
     private static String makeStr(int start, String msg, HashMap<String, Integer> dict) {
 		StringBuilder sb = new StringBuilder();
@@ -37,14 +32,12 @@ class Solution {
 			String temp = sb.toString();
 			if(!dict.containsKey(temp)) {
 				ans.add(dict.get(msg.substring(start, i)));
-				//System.out.println(dict.get(msg.substring(start, i)));
 				if(i>=start+2)
 					index = i;
 				return temp;
 			}
 		}
 		ans.add(dict.get(sb.toString()));
-		//System.out.println(dict.get(sb.toString()));
 		index = msg.length();
 		return sb.toString();
 	}
