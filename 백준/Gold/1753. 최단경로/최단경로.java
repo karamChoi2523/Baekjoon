@@ -1,82 +1,81 @@
-import java.io.*;
 import java.util.*;
-
+import java.io.*;
 
 public class Main {
 	static class Edge implements Comparable<Edge>{
-		int to, cost;
+		int cost, node;
 		
-		public Edge(int t, int c) {
-			to = t;
+		public Edge(int c, int n) {
 			cost = c;
+			node = n;
 		}
 		
 		@Override
 		public int compareTo(Edge o) {
+			if(this.cost==o.cost)
+				return this.node-o.node;
 			return this.cost-o.cost;
 		}
 	}
-	
-	static final int INF = (int)1e9;
-	
-	public static void main(String[] args) throws IOException {
+	static ArrayList<Edge>[] graph;
+	static int[] dist;
+	static int V,E;
+	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
 		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		V = Integer.parseInt(st.nextToken());
+		E = Integer.parseInt(st.nextToken());
 		
-		int v = Integer.valueOf(st.nextToken());
-		int e = Integer.valueOf(st.nextToken());
+		int start = Integer.parseInt(br.readLine());
 		
-		int k = Integer.valueOf(br.readLine());
-	
-		int[] dist = new int[v+1];
-		Arrays.fill(dist, INF);
+		graph = new ArrayList[V+1];
 		
-		ArrayList<Edge>[] graph = new ArrayList[v+1];
-		
-		for(int i=0;i<v+1;i++)
+		for(int i=1;i<V+1;i++)
 			graph[i] = new ArrayList<>();
 		
-		for(int i=0;i<e;i++) {
+		for(int i=0;i<E;i++) {
 			st = new StringTokenizer(br.readLine());
 
-			int from = Integer.valueOf(st.nextToken());
-			int to = Integer.valueOf(st.nextToken());
-			int cost = Integer.valueOf(st.nextToken());
+			int u = Integer.parseInt(st.nextToken());
+			int v = Integer.parseInt(st.nextToken());
+			int w = Integer.parseInt(st.nextToken());
 			
-			graph[from].add(new Edge(to, cost));
+			graph[u].add(new Edge(w, v));
 		}
+		dist = new int[V+1];
+		Arrays.fill(dist, (int)1e9);
 		
-		dijkstra2(v, e, k, graph, dist);
+		dijkstra(start);
 	}
-	private static void dijkstra2(int v, int e, int k, ArrayList<Edge>[] graph, int[] dist){
-		boolean[] visited = new boolean[v+1];
+	private static void dijkstra(int start) {
+		PriorityQueue<Edge> q = new PriorityQueue<>();
+		q.add(new Edge(0,start));
+		dist[start] = 0;
 		
-		PriorityQueue<Edge> pq = new PriorityQueue<>();
-		pq.add(new Edge(k, 0));
+		boolean[] visited = new boolean[V+1];
 		
-		dist[k] = 0;
-		
-		while(!pq.isEmpty()) {
-			Edge curr = pq.poll();
+		while(!q.isEmpty()) {
+			Edge curr = q.poll();
 			
-			if(visited[curr.to]) continue;
+			if(visited[curr.node]) continue;
 			
-			visited[curr.to] = true;
+			visited[curr.node] = true;
 			
-			for(Edge next : graph[curr.to]) {
-				int cost = dist[curr.to]+next.cost;
+			for(Edge next : graph[curr.node]) {
+				if(dist[next.node]<=next.cost+dist[curr.node]) continue;
 				
-				if(dist[next.to] > cost) {
-					dist[next.to] = cost;
-					pq.add(new Edge(next.to, cost));
+				int cost = next.cost+curr.cost;
+				
+				if(cost < dist[next.node]) {
+					dist[next.node] = cost;
+					q.add(new Edge(cost, next.node));
 				}
 			}
 		}
-		for(int i=1;i<v+1;i++)
-			if(dist[i]==INF)
-				System.out.println("INF");
-			else
-				System.out.println(dist[i]);
+		
+		for(int i=1;i<V+1;i++)
+			System.out.println(dist[i]==(int)1e9?"INF":dist[i]);
 	}
 }
