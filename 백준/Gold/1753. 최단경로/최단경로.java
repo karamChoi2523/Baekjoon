@@ -1,13 +1,15 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
+
 
 public class Main {
+	static int V,E,K;
 	static class Edge implements Comparable<Edge>{
 		int cost, node;
 		
-		public Edge(int c, int n) {
-			cost = c;
-			node = n;
+		public Edge(int cost, int node) {
+			this.cost = cost;
+			this.node = node;
 		}
 		
 		@Override
@@ -17,21 +19,16 @@ public class Main {
 			return this.cost-o.cost;
 		}
 	}
-	static ArrayList<Edge>[] graph;
-	static int[] dist;
-	static int V,E;
-	public static void main(String[] args) throws NumberFormatException, IOException {
+	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
 		StringTokenizer st = new StringTokenizer(br.readLine());
 
 		V = Integer.parseInt(st.nextToken());
 		E = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(br.readLine());
 		
-		int start = Integer.parseInt(br.readLine());
-		
-		graph = new ArrayList[V+1];
-		
+		ArrayList<Edge>[] graph = new ArrayList[V+1];
 		for(int i=1;i<V+1;i++)
 			graph[i] = new ArrayList<>();
 		
@@ -44,34 +41,30 @@ public class Main {
 			
 			graph[u].add(new Edge(w, v));
 		}
-		dist = new int[V+1];
-		Arrays.fill(dist, (int)1e9);
 		
-		dijkstra(start);
+		dijkstra(graph);
 	}
-	private static void dijkstra(int start) {
-		PriorityQueue<Edge> q = new PriorityQueue<>();
-		q.add(new Edge(0,start));
-		dist[start] = 0;
-		
+	static void dijkstra(ArrayList<Edge>[] graph) {
+		PriorityQueue<Edge> pq = new PriorityQueue<>();
+		int[] dist = new int[V+1];
 		boolean[] visited = new boolean[V+1];
 		
-		while(!q.isEmpty()) {
-			Edge curr = q.poll();
+		Arrays.fill(dist, (int)1e9);
+		pq.add(new Edge(0, K));
+		dist[K]=0;
+		
+		while(!pq.isEmpty()) {
+			Edge curr = pq.poll();
 			
-			if(visited[curr.node]) continue;
-			
+			if(visited[curr.node])
+				continue;
 			visited[curr.node] = true;
 			
 			for(Edge next : graph[curr.node]) {
-				if(dist[next.node]<=next.cost+dist[curr.node]) continue;
-				
-				int cost = next.cost+curr.cost;
-				
-				if(cost < dist[next.node]) {
-					dist[next.node] = cost;
-					q.add(new Edge(cost, next.node));
-				}
+				int cost = dist[curr.node]+next.cost;
+				if(dist[next.node]<=cost) continue;
+				dist[next.node] = cost;
+				pq.add(new Edge(cost, next.node));
 			}
 		}
 		
