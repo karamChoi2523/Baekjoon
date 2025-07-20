@@ -1,99 +1,96 @@
-import java.io.*;
 import java.util.*;
-
+import java.io.*;
 
 public class Main {
-	static class Edge implements Comparable<Edge>{
+	static class Node implements Comparable<Node>{
 		int to;
-		int cost;
-
-		public Edge(int t, int c) {
-			to = t;
-			cost = c;
+		long cost;
+		
+		public Node(int to, long cost) {
+			this.to = to;
+			this.cost = cost;
 		}
-
+		
 		@Override
-		public int compareTo(Edge o) {
-			return this.cost-o.cost;
+		public int compareTo(Node o) {
+			if(this.cost==o.cost)
+				return this.to-o.to;
+			return (int)(this.cost-o.cost);
 		}
 	}
-
-	static int INF = (int)1e9;
-
-	public static void main(String[] args) throws IOException {
+	static int n, m;
+	static int start, end;
+	static ArrayList<Node>[] adj;
+	static int[] route;
+	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-		int n = Integer.valueOf(br.readLine());
-		int m = Integer.valueOf(br.readLine());
-
-		// 인접리스트
-		ArrayList<ArrayList<Edge>> a = new ArrayList<>(); 	//인접리스트
-		int[] dist = new int[n+1];
-		boolean[] visited = new boolean[n+1];
-
-		Arrays.fill(dist, INF);
 		
-		for(int i=0;i<n+1;i++)
-			a.add(new ArrayList<>());
-
+		n = Integer.parseInt(br.readLine());
+		m = Integer.parseInt(br.readLine());
+		
+		adj = new ArrayList[n+1];
+		
+		for(int i=1;i<n+1;i++)
+			adj[i] = new ArrayList<>();
 		for(int i=0;i<m;i++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
-
-			int from = Integer.valueOf(st.nextToken());
-			int to = Integer.valueOf(st.nextToken());
-			int cost = Integer.valueOf(st.nextToken());
-
-			a.get(from).add(new Edge(to, cost));
+			
+			int from = Integer.parseInt(st.nextToken());
+			int to = Integer.parseInt(st.nextToken());
+			long cost = Long.parseLong(st.nextToken());
+			
+			adj[from].add(new Node(to, cost));
 		}
-
 		StringTokenizer st = new StringTokenizer(br.readLine());
+		
+		start = Integer.parseInt(st.nextToken());
+		end = Integer.parseInt(st.nextToken());
 
-		int start = Integer.valueOf(st.nextToken());
-		int end = Integer.valueOf(st.nextToken());
-
-		dijkstra2(n,m,a,dist,visited,start,end);
+		route = new int[n+1];
+		dijkstra();
+		
+		Stack<Integer> routes = new Stack<>();
+		int curr = end;
+		while(curr!=0) {
+			routes.add(curr);
+			curr = route[curr];
+		}
+		
+		System.out.println(routes.size());
+		while(!routes.isEmpty())
+			System.out.print(routes.pop()+" ");
 	}
-	private static void dijkstra2(int n, int m, ArrayList<ArrayList<Edge>> a, int[] dist, boolean[] visited, int start, int end){
-		PriorityQueue<Edge> pq = new PriorityQueue<>();
+	private static void dijkstra() {
+		PriorityQueue<Node> pq = new PriorityQueue<>();
+		pq.add(new Node(start, 0));
 		
-		pq.add(new Edge(start, 0));
-		
+		boolean[] visited = new boolean[n+1];
+		long[] dist = new long[n+1];
+		Arrays.fill(dist, Long.MAX_VALUE);
 		dist[start] = 0;
 		
-		int[] from = new int[n+1];
-		from[start] = -1;
+		route[start] = 0;
 		
+		StringBuilder sb = new StringBuilder();
+		int cnt = 0;
 		while(!pq.isEmpty()) {
-			Edge curr = pq.poll();
+			Node curr = pq.poll();
 			
-			int x = curr.to;
+			if(visited[curr.to]) continue;
 			
-			if(visited[x]) continue;
+			visited[curr.to] = true;
 			
-			visited[x] = true;
-			
-			for(int i=0;i<a.get(x).size();i++) {
-				Edge next  = a.get(x).get(i);
+			for(Node next : adj[curr.to]) {
+				long cost = dist[curr.to]+next.cost;
 				
-				if(dist[next.to]>next.cost+curr.cost) {
-					dist[next.to] = next.cost+curr.cost;
-					from[next.to] = x;
-					pq.add(new Edge(next.to, dist[next.to]));
-				}
+				if(dist[next.to]<=cost) continue;
+				
+				dist[next.to] = cost;
+				pq.add(new Node(next.to, cost));
+				route[next.to] = curr.to;
 			}
 		}
 		
 		System.out.println(dist[end]);
-		
-		Stack<Integer> st = new Stack<>();
-		int x = end;
-		while(x!=-1) {
-			st.push(x);
-			x = from[x];
-		}
-		System.out.println(st.size());
-		while(!st.isEmpty()) {
-			System.out.print(st.pop()+" ");
-		}
 	}
 }
