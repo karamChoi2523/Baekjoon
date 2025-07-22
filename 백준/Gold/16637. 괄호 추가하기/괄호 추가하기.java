@@ -2,44 +2,45 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
+	static int N;
+	static int max = Integer.MIN_VALUE;
 	static ArrayList<Integer> numList = new ArrayList<>();
 	static ArrayList<Character> opList = new ArrayList<>();
-	static int answer = Integer.MIN_VALUE;
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
-		int N = Integer.parseInt(br.readLine());
+		N = Integer.parseInt(br.readLine());
 		char[] arr = br.readLine().toCharArray();
 		
-		for(int i=0;i<arr.length;i++) {
-			if(arr[i]>='0' && arr[i]<='9')
-				numList.add(arr[i]-'0');
+		for(char c : arr) {
+			if(c>='0' && c<='9')
+				numList.add(c-'0');
 			else
-				opList.add(arr[i]);
+				opList.add(c);
 		}
+		dfs(numList.get(0),0);
 		
-		dfs(numList.get(0), 0);
-		
-		System.out.println(answer);
+		System.out.println(max);
 	}
 	static void dfs(int curr, int depth) {
-		if(depth>=opList.size()) {
-			answer = Math.max(answer, curr);
+		if(depth >= opList.size()) {
+			max = Math.max(curr, max);
 			return;
 		}
 		
-		int res = operate(curr, numList.get(depth+1), opList.get(depth));
+		//괄호x
+		int res = cal(curr, numList.get(depth+1), opList.get(depth));
 		dfs(res, depth+1);
 		
+		//괄호o
 		if(depth+1<opList.size()) {
-			res = operate(numList.get(depth+1), numList.get(depth+2), opList.get(depth+1));
-			dfs(operate(curr, res, opList.get(depth)), depth+2);
+			res = cal(numList.get(depth+1), numList.get(depth+2), opList.get(depth+1));
+			dfs(cal(curr, res, opList.get(depth)), depth+2);
 		}
 	}
-	
-	static int operate(int a, int b, char c) {
+	static int cal(int a, int b, char c) {
 		if(c=='-') return a-b;
-		else if(c=='+') return a+b;
-		else return a*b;
+		if(c=='+') return a+b;
+		return a*b;
 	}
 }
