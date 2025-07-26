@@ -27,19 +27,14 @@ public class Main {
 			return;
 		}
 		//괄호x
-		int b = numList.get(step+1);
-		char c = opList.get(step);
-		int res = cal(curr,b,c);
+		int res = cal(curr,numList.get(step+1),opList.get(step));
 		dfs(step+1, res);
 		
 		if(step+2<numList.size()) {
-			int a = numList.get(step+1);
-			b = numList.get(step+2);
-			c = opList.get(step+1);
-			res = cal(a,b,c);
+			res = cal(numList.get(step+1),numList.get(step+2),opList.get(step+1));
 			curr = cal(curr, res, opList.get(step));
 			dfs(step+2, curr);
-		}		
+		}
 	}
 	
 	static int cal(int a, int b, char op) {
