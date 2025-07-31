@@ -39,15 +39,8 @@ public class Main {
 	}
 	public static void pick(int idx) {
 		if(idx==N+1) {
-            /*
-			int cnt = 0;
-			for(int i=1;i<N+1;i++) {
-				if(visited[i]) cnt++;
-			}
-			*/
-			//if(cnt>0 && cnt<N)
-				if(checkGroup('A') && checkGroup('B'))
-					min = Math.min(min, calDiff());
+            if(checkGroup('A') && checkGroup('B'))
+			    min = Math.min(min, calDiff());
 			return;
 		}
 		
@@ -67,7 +60,7 @@ public class Main {
 			if(visited[i]==target)
 				list.add(i);
         
-        if(list.size()==0)
+        if(list.size()==0||list.size()==N)
             return false;
 		
 		Queue<Integer> q = new LinkedList<>();
