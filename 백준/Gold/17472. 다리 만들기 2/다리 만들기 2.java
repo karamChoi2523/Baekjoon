@@ -55,15 +55,6 @@ public class Main {
 				}
 			}
 		
-		boolean isAvailable = true;
-		for(int i=0;i<size;i++)
-			if(edges[i].size()==0) {
-				System.out.println(-1);
-				isAvailable = false;
-				break;
-			}
-		if(!isAvailable) return;
-		
 		//어느 다리를 연결할까		
 		int res = sol(0, size);
 		System.out.println(res);
