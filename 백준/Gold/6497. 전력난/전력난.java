@@ -69,8 +69,8 @@ public class Main {
 				kpq.add(new KEdge(x,y,z));
 			}
 			
-			int ans = prim();
-			//int ans = kruskal();
+			//int ans = prim();
+			int ans = kruskal();
 			
 			sb.append((total-ans)+"\n");
 		}
@@ -91,10 +91,12 @@ public class Main {
 	static int kruskal() {
 		int sum = 0;
 		
-		for(KEdge ke : kpq) {
-			if(findParent(ke.from)!=findParent(ke.to)) {
-				union(ke.from, ke.to);
-				sum += ke.cost;
+		while(!kpq.isEmpty()) {
+			KEdge curr = kpq.poll();
+			
+			if(findParent(curr.from)!=findParent(curr.to)) {
+				union(curr.from, curr.to);
+				sum += curr.cost;
 			}
 		}
 		return sum;
