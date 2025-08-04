@@ -1,48 +1,49 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
 public class Main {
-	static ArrayList<Integer> numList = new ArrayList<>();
-	static ArrayList<Character> opList = new ArrayList<>();
+	static int N;
+	static ArrayList<Integer> nums = new ArrayList<>();
+	static ArrayList<Character> op = new ArrayList<>();
 	static int max = Integer.MIN_VALUE;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		
-		int N = Integer.parseInt(br.readLine());
-		char[] arr = br.readLine().toCharArray();
-		for(int i=0;i<arr.length;i++) {
-			if(i%2==0)
-				numList.add(arr[i]-'0');
-			else
-				opList.add(arr[i]);
+
+		N = Integer.parseInt(br.readLine());
+		char[] crr = br.readLine().toCharArray();
+		for(int i=0;i<N;i++) {
+			if(i%2==0) nums.add(crr[i]-'0');
+			else op.add(crr[i]);
 		}
-		
-		dfs(0,numList.get(0));
-		
+
+		combination(0, nums.get(0));
+
 		System.out.println(max);
 	}
-	static void dfs(int step, int curr) {
-		if(step==opList.size()) {
+	static void combination(int idx, int curr) {
+		if(idx==op.size()) {
 			max = Math.max(max, curr);
 			return;
 		}
-		//괄호x
-		int res = cal(curr,numList.get(step+1),opList.get(step));
-		dfs(step+1, res);
-		
-		if(step+2<numList.size()) {
-			res = cal(numList.get(step+1),numList.get(step+2),opList.get(step+1));
-			curr = cal(curr, res, opList.get(step));
-			dfs(step+2, curr);
+
+		int res = cal(curr, nums.get(idx+1), op.get(idx));
+		combination(idx+1, res);
+
+		if(idx+2<nums.size()) {
+			res = cal(nums.get(idx+1), nums.get(idx+2), op.get(idx+1));
+			int res2 = cal(curr, res, op.get(idx));
+			combination(idx+2, res2);
 		}
 	}
-	
 	static int cal(int a, int b, char op) {
-		if(op=='+')
-			return a+b;
-		else if(op=='-')
-			return a-b;
-		
+		if(op=='-') return a-b;
+		if(op=='+') return a+b;
+
 		return a*b;
 	}
 }
