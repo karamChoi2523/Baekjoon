@@ -2,37 +2,37 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	static class KEdge implements Comparable<KEdge>{
+	static class Edge implements Comparable<Edge>{
 		int from, to, cost;
 		
-		public KEdge(int from, int to, int cost) {
+		public Edge(int from, int to, int cost) {
 			this.from = from;
 			this.to = to;
 			this.cost = cost;
 		}
 		
 		@Override
-		public int compareTo(KEdge o) {
+		public int compareTo(Edge o) {
 			return this.cost-o.cost;
 		}
 	}
-	static class PEdge implements Comparable<PEdge>{
-		int to;
+	static class Node implements Comparable<Node>{
+		int node;
 		int cost;
 		
-		public PEdge(int to, int cost) {
-			this.to = to;
+		public Node(int node, int cost) {
+			this.node = node;
 			this.cost = cost;
 		}
 		
 		@Override
-		public int compareTo(PEdge o) {
+		public int compareTo(Node o) {
 			return this.cost-o.cost;
 		}
 	}
 	static int m, n;
-	static ArrayList<PEdge>[] adj;
-	static PriorityQueue<KEdge> kpq;
+	static ArrayList<Node>[] adj;
+	static PriorityQueue<Edge> kpq;
 	static int[] parent;
 	public static void main(String[] args) throws IOException {
 		StringBuilder sb = new StringBuilder();
@@ -63,10 +63,10 @@ public class Main {
 				
 				total+=z;
 				
-				adj[x].add(new PEdge(y, z));
-				adj[y].add(new PEdge(x, z));
+				adj[x].add(new Node(y, z));
+				adj[y].add(new Node(x, z));
 				
-				kpq.add(new KEdge(x,y,z));
+				kpq.add(new Edge(x,y,z));
 			}
 			
 			//int ans = prim();
@@ -80,19 +80,24 @@ public class Main {
 		int px = findParent(x);
 		int py = findParent(y);
 		
-		if(px!=py)
+		if(px<py)
 			parent[py] = px;
+		else
+			parent[px] = py;
 	}
 	static int findParent(int x) {
-		if(parent[x]==x) return x;
+		while(x!=parent[x]) {
+			parent[x] = parent[parent[x]];
+			x = parent[x];
+		}
 		
-		return parent[x] = findParent(parent[x]);
+		return x;
 	}
 	static int kruskal() {
 		int sum = 0;
 		
 		while(!kpq.isEmpty()) {
-			KEdge curr = kpq.poll();
+			Edge curr = kpq.poll();
 			
 			if(findParent(curr.from)!=findParent(curr.to)) {
 				union(curr.from, curr.to);
@@ -102,23 +107,23 @@ public class Main {
 		return sum;
 	}
 	static int prim() {
-		PriorityQueue<PEdge> pq = new PriorityQueue<>();
+		PriorityQueue<Node> pq = new PriorityQueue<>();
 		boolean[] visited = new boolean[m];
 		
-		for(PEdge next : adj[0])
+		for(Node next : adj[0])
 			pq.add(next);
 		
 		visited[0] = true;
 		int sum = 0;
 		
 		while(!pq.isEmpty()) {
-			PEdge curr = pq.poll();
+			Node curr = pq.poll();
 			
-			if(visited[curr.to]) continue;
+			if(visited[curr.node]) continue;
+			visited[curr.node] = true;
 			
-			visited[curr.to] = true;			
 			sum+=curr.cost;
-			for(PEdge next : adj[curr.to]) {
+			for(Node next : adj[curr.node]) {
 				pq.add(next);
 			}
 		}
