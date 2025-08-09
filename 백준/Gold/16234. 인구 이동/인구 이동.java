@@ -3,16 +3,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
-	static int N,L,R;
+	static int N, L, R;
+	static int[][] board;
 	static int[] dx = {-1,1,0,0};
 	static int[] dy = {0,0,-1,1};
 	static boolean[][] visited;
-	static int[][] board;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
@@ -22,51 +21,53 @@ public class Main {
 		R = Integer.parseInt(st.nextToken());
 		
 		board = new int[N][N];
+		
 		for(int i=0;i<N;i++) {
 			st = new StringTokenizer(br.readLine());
 			for(int j=0;j<N;j++)
 				board[i][j] = Integer.parseInt(st.nextToken());
 		}
-
+		
 		int day = 0;
 		while(true) {
-			boolean isMove = false;
+			boolean isMoved = false;
 			visited = new boolean[N][N];
 			for(int i=0;i<N;i++)
 				for(int j=0;j<N;j++)
 					if(!visited[i][j]) {
-						if(bfs(i, j))
-							isMove = true;
+						if(bfs(i,j))
+							isMoved = true;
 					}
-			if(!isMove) break;
+			if(!isMoved) break;
 			day++;
 		}
+		
 		System.out.println(day);
 	}
-	private static boolean bfs(int x, int y) {
+	static boolean bfs(int x, int y) {
 		Queue<int[]> q = new LinkedList<>();
-		visited[x][y] = true;
 		q.add(new int[] {x, y});
+		visited[x][y] = true;
 		
-		List<int[]> posList = new ArrayList<>();
+		int total = board[x][y];
+		int size = 1;
+		ArrayList<int[]> posList = new ArrayList<>();
 		posList.add(new int[] {x, y});
 		
-		int size = 1;
-		int total = board[x][y];
 		while(!q.isEmpty()) {
 			int[] curr = q.poll();
 			
-			for(int i=0;i<4;i++) {
-				int nx = curr[0]+dx[i];
-				int ny = curr[1]+dy[i];
+			for(int d=0;d<4;d++) {
+				int nx = curr[0]+dx[d];
+				int ny = curr[1]+dy[d];
 				
 				if(nx>=0 && nx<N && ny>=0 && ny<N) {
-					if(!visited[nx][ny] && isOpen(curr[0],curr[1],nx,ny)) {
+					if(!visited[nx][ny] && isUnion(curr[0],curr[1],nx,ny)) {
 						q.add(new int[] {nx, ny});
+						total += board[nx][ny];
+						size++;
 						visited[nx][ny] = true;
 						posList.add(new int[] {nx, ny});
-						size++;
-						total += board[nx][ny];
 					}
 				}
 			}
@@ -74,17 +75,19 @@ public class Main {
 		
 		if(size<=1) return false;
 		
-		int res = total/size;
-		for(int[] pos : posList) {
-			board[pos[0]][pos[1]] = res;
-		}
-		
+		makeUnion(posList, total/size);
 		return true;
 	}
-	static boolean isOpen(int fx, int fy, int sx, int sy) {
-		int diff = Math.abs(board[fx][fy]-board[sx][sy]);
-		if(diff>=L && diff<=R)
-			return true;
-		return false;
+	
+	static void makeUnion(ArrayList<int[]> posList, int num) {
+		for(int[] pos : posList) {
+			board[pos[0]][pos[1]] = num;
+		}
+	}
+	
+	static boolean isUnion(int r1, int c1, int r2, int c2) {
+		int diff = Math.abs(board[r1][c1]-board[r2][c2]);
+		
+		return diff>=L && diff<=R;
 	}
 }
