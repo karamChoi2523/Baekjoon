@@ -1,36 +1,35 @@
 import java.io.*;
 import java.util.*;
 
-
 public class Main {
-	static int V,E,K;
-	static class Edge implements Comparable<Edge>{
-		int cost, node;
+	static class Node implements Comparable<Node>{
+		int node;
+		int cost;
 		
-		public Edge(int cost, int node) {
-			this.cost = cost;
+		public Node(int node, int cost) {
 			this.node = node;
+			this.cost = cost;
 		}
 		
 		@Override
-		public int compareTo(Edge o) {
-			if(this.cost==o.cost)
-				return this.node-o.node;
+		public int compareTo(Node o) {
 			return this.cost-o.cost;
 		}
 	}
-	public static void main(String[] args) throws IOException{
+	static int V, E, K;
+	static ArrayList<Node>[] adj;
+	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
 		
-		StringTokenizer st = new StringTokenizer(br.readLine());
-
+		st = new StringTokenizer(br.readLine());
 		V = Integer.parseInt(st.nextToken());
 		E = Integer.parseInt(st.nextToken());
 		K = Integer.parseInt(br.readLine());
 		
-		ArrayList<Edge>[] graph = new ArrayList[V+1];
+		adj = new ArrayList[V+1];
 		for(int i=1;i<V+1;i++)
-			graph[i] = new ArrayList<>();
+			adj[i] = new ArrayList<>();
 		
 		for(int i=0;i<E;i++) {
 			st = new StringTokenizer(br.readLine());
@@ -39,36 +38,37 @@ public class Main {
 			int v = Integer.parseInt(st.nextToken());
 			int w = Integer.parseInt(st.nextToken());
 			
-			graph[u].add(new Edge(w, v));
+			adj[u].add(new Node(v,w));
 		}
 		
-		dijkstra(graph);
+		dijkstra();
 	}
-	static void dijkstra(ArrayList<Edge>[] graph) {
-		PriorityQueue<Edge> pq = new PriorityQueue<>();
-		int[] dist = new int[V+1];
+	static void dijkstra() {
+		PriorityQueue<Node> pq = new PriorityQueue<>();
 		boolean[] visited = new boolean[V+1];
+		int[] dist = new int[V+1];
 		
-		Arrays.fill(dist, (int)1e9);
-		pq.add(new Edge(0, K));
-		dist[K]=0;
+		Arrays.fill(dist, Integer.MAX_VALUE);
+		dist[K] = 0;
+		pq.add(new Node(K,0));
 		
 		while(!pq.isEmpty()) {
-			Edge curr = pq.poll();
+			Node curr = pq.poll();
 			
-			if(visited[curr.node])
-				continue;
+			if(visited[curr.node]) continue;
 			visited[curr.node] = true;
 			
-			for(Edge next : graph[curr.node]) {
-				int cost = dist[curr.node]+next.cost;
-				if(dist[next.node]<=cost) continue;
+			for(Node next : adj[curr.node]) {
+				int cost = next.cost+dist[curr.node];
+				
+				if(cost >= dist[next.node]) continue;
+				
 				dist[next.node] = cost;
-				pq.add(new Edge(cost, next.node));
+				pq.add(new Node(next.node, cost));
 			}
 		}
 		
 		for(int i=1;i<V+1;i++)
-			System.out.println(dist[i]==(int)1e9?"INF":dist[i]);
+			System.out.println(dist[i]==Integer.MAX_VALUE?"INF":dist[i]);
 	}
 }
