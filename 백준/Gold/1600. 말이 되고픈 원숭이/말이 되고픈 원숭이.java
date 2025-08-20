@@ -18,6 +18,12 @@ public class Main {
 			{1,-2},
 			{2,-1}
 	};
+	//원숭이와 말을 다른 배열로 관리하면 힘들다 => dx dy를 하나로 짤 것
+	//앞에서부터 원숭이 4개, 말 4개
+	static int[] dr = {-1,1,0,0,-1,-2,-1,-2,1,2,1,2};
+	static int[] dc = {0,0,-1,1,-2,-1,2,1,2,1,-2,-1};
+	//한 좌표에 여러 번 올 수 있음 => 3차원 배열로 방문 체크
+	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st;
@@ -42,10 +48,10 @@ public class Main {
 	}
 	static void bfs() {
 		Queue<int[]> q = new LinkedList<>();
-		q.add(new int[] {0,0,K,0}); //x,y,horse,len
-
+		q.add(new int[] {0,0,0,0}); //x,y,horse,len
+		
 		boolean[][][] visited = new boolean[H][W][K+1];
-		visited[0][0][K] = true;
+		visited[0][0][0] = true;
 
 		while(!q.isEmpty()) {
 			int[] curr = q.poll();
@@ -58,30 +64,17 @@ public class Main {
 				min = Math.min(min, len);
 				continue;
 			}
-
-			if(horse>0) {
-				for(int[] move : hMoves) {
-					int nx = cx+move[0];
-					int ny = cy+move[1];
-
-					if(nx>=0 && nx<H && ny>=0 && ny<W) {
-						if(!visited[nx][ny][horse-1] && board[nx][ny]!=1) {
-							visited[nx][ny][horse-1] = true;
-							q.add(new int[] {nx, ny, horse-1, len+1});
-						}
-					}
-				}
-			}
-
-
-			for(int d=0;d<4;d++) {
-				int nx = cx+dx[d];
-				int ny = cy+dy[d];
+			
+			for(int d=0;d<(horse==K?4:12);d++) {
+				int nx = cx+dr[d];
+				int ny = cy+dc[d];
+				
+				int nHorse = d<4?horse:horse+1;
 
 				if(nx>=0 && nx<H && ny>=0 && ny<W) {
-					if(!visited[nx][ny][horse] && board[nx][ny]!=1) {
-						visited[nx][ny][horse] = true;
-						q.add(new int[] {nx,ny,horse,len+1});
+					if(!visited[nx][ny][nHorse] && board[nx][ny]!=1) {
+						visited[nx][ny][nHorse] = true;
+						q.add(new int[] {nx,ny,nHorse,len+1});
 					}
 				}
 			}
