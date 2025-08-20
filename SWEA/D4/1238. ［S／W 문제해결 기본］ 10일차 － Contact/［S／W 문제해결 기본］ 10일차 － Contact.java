@@ -35,7 +35,7 @@ public class Solution {
 		boolean[] visited = new boolean[101];
 		visited[start] = true;
 		
-		int res = -1;
+		int res = start;
 		while(!q.isEmpty()) {
 			int size = q.size();
 			int max = -1;
