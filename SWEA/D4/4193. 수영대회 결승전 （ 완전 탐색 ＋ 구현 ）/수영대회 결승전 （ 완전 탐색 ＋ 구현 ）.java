@@ -1,6 +1,14 @@
 import java.io.*;
 import java.util.*;
 
+//바다 전체를 사용 할 수 없기에 가로 N 세로 N만큼의 공간만 사용하여 진행하도록 하였다.
+//이 공간을 벗어나면 실격처리가 되므로 공간안에서 가장 빠른 길을 찾아야 한다.
+//=> 2차원 배열이 아닐 수 있음. 속단하지 말 것
+//=> 간선을 보고 결정해라
+
+//소용돌이는 생성되고 2초동안 유지되다가 1초동안 잠잠해진다.
+//=> bfs의 step 문제(레벨 단위)라는 것임
+
 public class Solution {
 	static int N;
 	static int[][] board;
@@ -43,9 +51,9 @@ public class Solution {
 	static int min = Integer.MAX_VALUE;
 	static int bfs(int sx, int sy, int fx, int fy) {
 		Queue<int[]> q = new ArrayDeque<>();
-		boolean[][][] visited = new boolean[N][N][N*N];
+		boolean[][] visited = new boolean[N][N];
 		q.add(new int[] {sx, sy, 0});
-		visited[sx][sy][0] = true;
+		visited[sx][sy] = true;
 		
 		while(!q.isEmpty()) {
 			int size = q.size();
@@ -59,14 +67,14 @@ public class Solution {
 					int nx = cx+dx[d];
 					int ny = cy+dy[d];
 										
-					if(check(nx, ny) && !visited[nx][ny][cnt]) {
+					if(check(nx, ny) && !visited[nx][ny]) {
 						if(nx==fx && ny==fy)
 							return cnt+1;
 						if(board[nx][ny]==2 && cnt%3!=2) {
 							q.add(new int[] {cx,cy,cnt+1});
 							continue;
 						}
-						visited[nx][ny][cnt] = true;
+						visited[nx][ny] = true;
 						q.add(new int[] {nx,ny,cnt+1});
 						
 					}
