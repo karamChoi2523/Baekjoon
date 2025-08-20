@@ -62,7 +62,7 @@ public class Solution {
 					if(check(nx, ny) && !visited[nx][ny][cnt]) {
 						if(nx==fx && ny==fy)
 							return cnt+1;
-						if(board[nx][ny]==2 && (cnt-2)%3!=0) {
+						if(board[nx][ny]==2 && cnt%3!=2) {
 							q.add(new int[] {cx,cy,cnt+1});
 							continue;
 						}
