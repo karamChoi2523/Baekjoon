@@ -1,66 +1,76 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
+
 
 public class Solution {
-	static class Pos{
-		int x, y;
-		
-		public Pos(int x, int y) {
-			this.x = x;
-			this.y = y;
-		}
-	}
-	static ArrayList<Pos> posList;
-	static int[] select;
-	static boolean[] visited;
+	static int N;
+	static Point company;
+	static Point home;
 	static int min = Integer.MAX_VALUE;
+	static List<Point> customers;
+	static boolean[] visited;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int T = Integer.parseInt(br.readLine());
 
+		int T = Integer.parseInt(br.readLine().trim());
+		//int T = 10;
 		for(int tc=1;tc<=T;tc++) {
-			int N = Integer.parseInt(br.readLine());
-			StringTokenizer st = new StringTokenizer(br.readLine());
-			Pos company = new Pos(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
-			Pos home = new Pos(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+			initialize(br);
 			
-			posList = new ArrayList<>();
-			for(int i=0;i<N;i++) {
-				Pos customer = new Pos(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
-				posList.add(customer);
-			}
-			
-			select = new int[N];
-			visited = new boolean[N];
-			min = Integer.MAX_VALUE;
-			permutation(0, N, company, home);
-			
-			System.out.printf("#%d %d\n",tc, min);
+			permutation(0,0,company);
+
+			System.out.printf("#%d %d\n",tc,min);
 		}
 	}
-	static void permutation(int idx, int len, Pos company, Pos home) {
-		if(idx==len) {
-			int dist = 0;
-			Pos pre = company;
-			for(int i=0;i<len;i++) {
-				Pos curr = posList.get(select[i]);
-				dist += Math.abs(pre.x-curr.x)+Math.abs(pre.y-curr.y);
-				pre = curr;
-			}
-			Pos curr = home;
-			dist += Math.abs(pre.x-curr.x)+Math.abs(pre.y-curr.y);
-			
-			min = Math.min(min, dist);
+	static void permutation(int idx, int sum, Point pre) {
+		if(idx==N) {
+			sum += home.calDist(pre.x, pre.y);
+			min = Math.min(min, sum);
 			return;
 		}
 		
-		for(int i=0;i<len;i++) {
+		for(int i=0;i<N;i++) {
 			if(!visited[i]) {
 				visited[i] = true;
-				select[idx] = i;
-				permutation(idx+1, len, company, home);
+				Point cus = customers.get(i);
+				permutation(idx+1, sum+cus.calDist(pre.x, pre.y), cus);
 				visited[i] = false;
 			}
+		}
+	}
+	private static void initialize(BufferedReader br) throws IOException {
+		N = Integer.parseInt(br.readLine().trim());
+		
+		StringTokenizer st;
+		st = new StringTokenizer(br.readLine());
+		
+		int x = Integer.parseInt(st.nextToken());
+		int y = Integer.parseInt(st.nextToken());
+		company = new Point(x, y);
+		x = Integer.parseInt(st.nextToken());
+		y = Integer.parseInt(st.nextToken());
+		home = new Point(x, y);
+		
+		customers = new ArrayList<>();
+		while(st.hasMoreTokens()) {
+			x = Integer.parseInt(st.nextToken());
+			y = Integer.parseInt(st.nextToken());
+			customers.add(new Point(x, y));
+		}
+		
+		min = Integer.MAX_VALUE;
+		visited = new boolean[N];
+	}
+	static class Point{
+		int x, y;
+		
+		Point(int x, int y){
+			this.x = x;
+			this.y = y;
+		}
+		
+		public int calDist(int x, int y) {
+			return Math.abs(this.x-x)+Math.abs(this.y-y);
 		}
 	}
 }
