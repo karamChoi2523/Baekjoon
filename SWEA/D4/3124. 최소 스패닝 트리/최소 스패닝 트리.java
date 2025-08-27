@@ -1,79 +1,76 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
+
 
 public class Solution {
-	static class Edge implements Comparable<Edge>{
-		int from;
-		int to;
+	static int V, E;
+	static PriorityQueue<Node> pq;
+	static ArrayList<Node>[] adj;
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		int T = Integer.parseInt(br.readLine().trim());
+		//int T = 10;
+		for(int tc=1;tc<=T;tc++) {
+			initialize(br);
+						
+			long[] dist = new long[V+1];
+			Arrays.fill(dist, Integer.MAX_VALUE);
+			boolean[] visited = new boolean[V+1];
+			pq = new PriorityQueue<>();
+			
+			long sum = 0;
+			dist[1] = 0;
+			pq.add(new Node(1,0));
+			
+			while(!pq.isEmpty()) {
+				Node curr = pq.poll();
+				
+				if(visited[curr.node]) continue;
+				visited[curr.node] = true;
+				sum += curr.cost;	//중복으로 더해질 수 있으므로 방문 처리를 할 때 합산을 해야 함
+				
+				for(Node next : adj[curr.node]) {
+					if(visited[next.node] || dist[next.node]<next.cost) continue;
+					dist[next.node] = next.cost;
+					pq.add(new Node(next.node, next.cost));
+				}
+			}
+			System.out.printf("#%d %d\n", tc, sum);
+		}
+	}
+	private static void initialize(BufferedReader br) throws IOException {
+		StringTokenizer st;
+		st = new StringTokenizer(br.readLine());
+		V = Integer.parseInt(st.nextToken());
+		E = Integer.parseInt(st.nextToken());
+
+		adj = new ArrayList[V+1];
+		for(int i=0;i<V+1;i++)
+			adj[i] = new ArrayList<>();
+		for(int i=0;i<E;i++) {
+			st = new StringTokenizer(br.readLine());
+			int A = Integer.parseInt(st.nextToken());
+			int B = Integer.parseInt(st.nextToken());
+			long C = Long.parseLong(st.nextToken());
+			
+			adj[A].add(new Node(B,C));
+			adj[B].add(new Node(A,C));
+		}
+		
+	}
+	static class Node implements Comparable<Node>{
+		int node;
 		long cost;
 		
-		public Edge(int from, int to, long c) {
-			this.from = from;
-			this.to = to;
+		Node(int n, long c){
+			node = n;
 			cost = c;
 		}
 		
 		@Override
-		public int compareTo(Edge o) {
+		public int compareTo(Node o) {
 			return Long.compare(this.cost, o.cost);
 		}
-	}
-	static int V, E;
-	static PriorityQueue<Edge> pq;
-	static int[] parent;
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int T = Integer.parseInt(br.readLine());
-
-		for(int tc=1;tc<=T;tc++) {
-			StringTokenizer st = new StringTokenizer(br.readLine());
-			V = Integer.parseInt(st.nextToken());
-			E = Integer.parseInt(st.nextToken());
-			
-			pq = new PriorityQueue<>();
-			parent = new int[V+1];
-			for(int i=1;i<V+1;i++)
-				parent[i] = i;
-			
-			for(int i=0;i<E;i++) {
-				st = new StringTokenizer(br.readLine());
-				int a = Integer.parseInt(st.nextToken());
-				int b = Integer.parseInt(st.nextToken());
-				long c = Long.parseLong(st.nextToken());
-			
-				pq.add(new Edge(a,b,c));
-			}
-			
-			System.out.printf("#%d %d\n",tc, kruskal());
-		}
-	}
-	private static long kruskal() {
-		long sum = 0;
-		
-		while(!pq.isEmpty()){
-			Edge curr = pq.poll();
-			if(findParent(curr.from)!=findParent(curr.to)) {
-				union(curr.from, curr.to);
-				sum += curr.cost;
-			}
-		}
-		return sum;
-	}
-	static void union(int x, int y) {
-		int px = findParent(x);
-		int py = findParent(y);
-		
-		if(px<py)
-			parent[py] = px;
-		else
-			parent[px] = py;
-	}
-	static int findParent(int x) {
-		while(parent[x]!=x) {
-			parent[x] = parent[parent[x]];
-			x = parent[x];
-		}
-		
-		return x;
 	}
 }
