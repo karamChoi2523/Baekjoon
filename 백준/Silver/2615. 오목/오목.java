@@ -1,76 +1,68 @@
+import java.util.*;
 import java.io.*;
-import java.util.StringTokenizer;
 
 public class Main {
-	static int[][] board = new int[19][19];
-	static int[] dx = new int[] {0,1,1,-1};
-	static int[] dy = new int[] {1,0,1,1};
-
+	static int[] dx = {0,1,1,-1};
+	static int[] dy = {1,1,0,1};
+	static int[][] board;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
 		
-		for (int i = 0; i < 19; i++) {
-			StringTokenizer st = new StringTokenizer(br.readLine());
-			for (int j = 0;j < 19;j++) {
-				board[i][j] = Integer.valueOf(st.nextToken());
-			}
+		board = new int[19][19];
+		
+		for(int i=0;i<19;i++) {
+			st = new StringTokenizer(br.readLine());
+			for(int j=0;j<19;j++)
+				board[i][j] = Integer.parseInt(st.nextToken());
 		}
 		
-		for(int j=0;j<19;j++)
-			for(int i=0;i<19;i++) {
-				if(board[i][j]!=0) {
-					boolean check = solution(i, j, board[i][j]);
-					if(check)
-						return;
-				}
-			}
+		boolean gameOver = false;
+		LOOP:for(int i=0;i<19;i++)
+			for(int j=0;j<19;j++)
+				if(board[i][j]!=0)
+					if(check(i,j)) {
+						System.out.println(board[i][j]);
+						System.out.println((i+1)+" "+(j+1));
+						gameOver = true;
+						break LOOP;
+					}
 		
-		System.out.println(0);
+		
+		if(!gameOver) {
+			System.out.println("0");
+		}
 	}
-
-	private static boolean solution(int x, int y, int target) {		
-		for(int i=0;i<4;i++) {
-			int nx = x;
-			int ny = y;
-			int sum=1;
+	static boolean check(int x, int y) {
+		
+		for(int d=0;d<4;d++) {
+			int cnt = 0;
+			int cx = x;
+			int cy = y;
 			
+			//반대 방향 체크
+			int px = x-dx[d];
+			int py = y-dy[d];
+			
+			if(checkNext(px, py) && board[px][py]==board[x][y]) continue;
+			
+			//반대 방향에 같은 색 돌이 없으면
 			while(true) {
-				nx+=dx[i];
-				ny+=dy[i];
-				
-				if(nx>=0 && nx<19 && ny>=0 && ny<19) {
-					if(board[nx][ny] == target)
-						sum++;
-					else
-						break;
-				}else
+				if(!checkNext(cx, cy) || board[cx][cy]!=board[x][y])
 					break;
-			}
-			nx = x;
-			ny = y;
-			
-			while(true) {
-				nx-=dx[i];
-				ny-=dy[i];
 				
-				if(nx>=0 && nx<19 && ny>=0 && ny<19) {
-					if(board[nx][ny] == target)
-						sum++;
-					else
-						break;
-				}else
-					break;
+				cnt++;
+				if(cnt>=6) break;
+				cx+=dx[d];
+				cy+=dy[d];
 			}
-			
-
-			if(sum==5) {
-				System.out.println(target);
-				System.out.println((x+1)+" "+(y+1));
-				return true;
-			}
+			if(cnt==5) return true;
 		}
 		
 		return false;
 	}
-
+	static boolean checkNext(int x, int y) {
+		if(x<0 || x>=19 || y<0 || y>=19) return false;
+		return true;
+	}
 }
