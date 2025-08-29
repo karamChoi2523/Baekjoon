@@ -87,15 +87,16 @@ public class Solution {
 			copy[curr[0]][curr[1]] = 0;
 		}
 		//벽돌 내려옴,,
-		for(int i=0;i<W;i++) {
-			int idx = H-1;
-			for(int j=H-1;j>=0;j--)
-				if(copy[j][i]!=0) {
-					int val = copy[j][i];
-					copy[j][i] = 0;
-					copy[idx--][i] = val;
-				}
-		}
+		Stack<Integer> stack = new Stack<>();
+        for(int c=0;c<W;c++){
+        	for(int r=0;r<H;r++){
+                if(copy[r][c]!=0) stack.push(copy[r][c]);
+            	copy[r][c] = 0;
+            }
+            int idx = H-1;
+            while(!stack.isEmpty())
+                copy[idx--][c] = stack.pop();
+        }
 	}
 	static boolean checkNext(int x, int y) {
 		if(x<0 || x>=H || y<0 || y>=W) return false;
