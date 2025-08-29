@@ -60,8 +60,6 @@ public class Solution {
 		
 		q.add(new int[] {startR, start, copy[startR][start]});
 		while(!q.isEmpty()) {
-			int size = q.size();
-
 			int[] curr = q.poll();
 			//공격
 			for(int d=0;d<4;d++) {
@@ -72,7 +70,7 @@ public class Solution {
 					
 					if(!checkNext(nx, ny)) break;
 					if(copy[nx][ny]!=0) {
-						q.add(new int[] {nx, ny, copy[nx][ny]});
+						if(copy[nx][ny]>1) q.add(new int[] {nx, ny, copy[nx][ny]});
 						copy[nx][ny] = 0;
 					}
 				}
