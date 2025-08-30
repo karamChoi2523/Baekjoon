@@ -89,7 +89,7 @@ public class Solution {
 			st = new StringTokenizer(br.readLine());
 			for(int j=0;j<N;j++) {
 				board[i][j] = Integer.parseInt(st.nextToken());
-				if(board[i][j]==1 && i!=0 && j!=0)
+				if(board[i][j]==1 && i!=0 && j!=0 && i!=N-1 && j!=N-1)
 					cells.add(new Cell(i,j));
 			}
 		}
