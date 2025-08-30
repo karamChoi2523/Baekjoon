@@ -2,18 +2,10 @@ import java.io.*;
 import java.util.*;
 
 public class Solution {
-	static class Cell{
-		int x, y;
-
-		Cell(int x, int y){
-			this.x = x;
-			this.y = y;
-		}
-	}
 	static int N;
 	static int[] dx = {-1,1,0,0};
 	static int[] dy = {0,0,-1,1};
-	static ArrayList<Cell> cells;
+	static ArrayList<int[]> cores;
 	static int maxCnt;
 	static int minTotal;
 	static boolean[][] visited;
@@ -32,7 +24,7 @@ public class Solution {
 		}
 	}
 	static void dfs(int idx, int cnt, int total) {
-		if(idx==cells.size()) {
+		if(idx==cores.size()) {
 			if(cnt > maxCnt) {
 				maxCnt = cnt;
 				minTotal = total;
@@ -42,16 +34,17 @@ public class Solution {
 			return;
 		}
 
-		Cell curr = cells.get(idx);
-
+		int[] curr = cores.get(idx);
+		int x = curr[0];
+		int y = curr[1];
 		for(int d=0;d<4;d++) {
-			int len = check(curr.x, curr.y, d);
+			int len = check(x, y, d);
 			if(len==-1) {
 				dfs(idx+1, cnt, total);
 			}else {
-				toggle(curr.x, curr.y, d);
+				toggle(x, y, d);
 				dfs(idx+1, cnt+1, total+len);
-				toggle(curr.x, curr.y, d);
+				toggle(x, y, d);
 			}
 		}
 	}
@@ -82,7 +75,7 @@ public class Solution {
 		maxCnt = 0;
 		minTotal = Integer.MAX_VALUE;
 		visited = new boolean[N][N];
-		cells = new ArrayList<>();
+		cores = new ArrayList<>();
 		board = new int[N][N];
 
 		for(int i=0;i<N;i++) {
@@ -90,7 +83,7 @@ public class Solution {
 			for(int j=0;j<N;j++) {
 				board[i][j] = Integer.parseInt(st.nextToken());
 				if(board[i][j]==1 && i!=0 && j!=0 && i!=N-1 && j!=N-1)
-					cells.add(new Cell(i,j));
+					cores.add(new int[] {i,j});
 			}
 		}
 	}
