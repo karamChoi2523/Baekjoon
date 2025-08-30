@@ -8,78 +8,67 @@ public class Main {
 	static int[] dy = {0,0,-1,1};
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		
-		int cnt = 1;
+
+		int tc = 1;
 		while(true) {
 			N = Integer.parseInt(br.readLine());
 			if(N==0) break;
-			board = new int[N][N];
+
+			initialize(br);
 			
-			StringTokenizer st;
-			for(int i=0;i<N;i++) {
-				st = new StringTokenizer(br.readLine());
-				for(int j=0;j<N;j++)
-					board[i][j] = Integer.parseInt(st.nextToken());
-			}
 			int res = dijkstra();
-			
-			System.out.printf("Problem %d: %d\n", cnt++, res);
-		}
-	}
-	static class Node implements Comparable<Node>{
-		int x, y, cost;
-		
-		Node(int x, int y, int c){
-			this.x = x;
-			this.y = y;
-			cost = c;
-		}
-		
-		@Override
-		public int compareTo(Node o) {
-			return this.cost - o.cost;
+
+			System.out.println("Problem "+(tc++)+": "+res);
 		}
 	}
 	static int dijkstra() {
-		PriorityQueue<Node> pq = new PriorityQueue<>();
+		Queue<int[]> pq = new PriorityQueue<>(new Comparator<int[]>() {
+			@Override
+			public int compare(int[] o1, int[] o2) {
+				return o1[2]-o2[2];
+			}
+		});
 		boolean[][] visited = new boolean[N][N];
 		int[][] dist = new int[N][N];
 		for(int i=0;i<N;i++)
-			Arrays.fill(dist[i], (int)1e9);
-		
-		pq.add(new Node(0,0,board[0][0]));
+			Arrays.fill(dist[i], Integer.MAX_VALUE);
 		dist[0][0] = board[0][0];
+		pq.add(new int[] {0,0,board[0][0]});
+		//visited[0][0] = true;
 		
 		while(!pq.isEmpty()) {
-			Node curr = pq.poll();
+			int[] curr = pq.poll();
+			int x = curr[0];
+			int y = curr[1];
+			int total = curr[2];
 			
-			if(visited[curr.x][curr.y]) continue;
-			visited[curr.x][curr.y] = true;
+			if(visited[x][y]) continue;
+			visited[x][y] = true;
+			
+			if(x==N-1 && y==N-1) return curr[2];
 			
 			for(int d=0;d<4;d++) {
-				int nx = curr.x+dx[d];
-				int ny = curr.y+dy[d];
+				int nx = x+dx[d];
+				int ny = y+dy[d];
 				
-				if(!checkNext(nx, ny) || visited[nx][ny]) continue;
-				int cost = curr.cost+board[nx][ny];
+				if(!checkNext(nx, ny)||visited[nx][ny]) continue;
+				int cost = total + board[nx][ny];
 				if(dist[nx][ny]>cost) {
 					dist[nx][ny] = cost;
-					pq.add(new Node(nx, ny, cost));
+					pq.add(new int[] {nx, ny, cost});
 				}
 			}
 		}
-		
-		return dist[N-1][N-1];
+		return Integer.MAX_VALUE;
 	}
 	static boolean checkNext(int x, int y) {
 		if(x<0 || x>=N || y<0 || y>=N) return false;
 		return true;
 	}
 	private static void initialize(BufferedReader br) throws IOException {
-		N = Integer.parseInt(br.readLine());
-		board = new int[N][N];
-		
 		StringTokenizer st;
+
+		board = new int[N][N];
 		for(int i=0;i<N;i++) {
 			st = new StringTokenizer(br.readLine());
 			for(int j=0;j<N;j++)
