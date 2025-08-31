@@ -6,7 +6,6 @@ public class Main {
 	static int[][] board;
 	static int white;
 	static int blue;
-	static boolean[][] visited;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -27,10 +26,6 @@ public class Main {
 			if(nx+size>N || ny+size>N) continue;
 			if(!check(nx, ny, size)) {
 				sol(nx, ny, size/2);
-			}else {
-				for(int i=nx;i<nx+size;i++)
-					for(int j=ny;j<ny+size;j++)
-						visited[i][j] = true;
 			}
 		}
 	}
@@ -39,7 +34,7 @@ public class Main {
 		
 		for(int i=x;i<x+size;i++)
 			for(int j=y;j<y+size;j++)
-				if(board[i][j]!=target || visited[i][j]) return false;
+				if(board[i][j]!=target) return false;
 		
 		if(target==0) white++;
 		else blue++;
@@ -52,7 +47,6 @@ public class Main {
 		N = Integer.parseInt(br.readLine());
 		
 		board = new int[N][N];
-		visited = new boolean[N][N];
 		for(int i=0;i<N;i++) {
 			st = new StringTokenizer(br.readLine());
 			for(int j=0;j<N;j++)
