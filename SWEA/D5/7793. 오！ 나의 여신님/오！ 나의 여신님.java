@@ -1,95 +1,107 @@
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
 public class Solution {
+	static int N, M;
 	static int[] dx = {-1,1,0,0};
 	static int[] dy = {0,0,-1,1};
-	static int N, M;
-	static char[][] board;
 	static int sx, sy;
+	static char[][] board;
+	static int[][] devilTime;
+	static Queue<int[]> devils;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		
+		int T = Integer.parseInt(br.readLine());
+		
+		for(int tc=1;tc<=T;tc++) {
+			StringTokenizer st;
+			
+			st = new StringTokenizer(br.readLine());
 
-		StringBuilder sb = new StringBuilder();
-		//int T = 10;
-		int T = Integer.parseInt(br.readLine().trim());
-		for(int tc=1;tc<=T;tc++) {			
-			initialize(br);
-			int res = sol();
-			System.out.printf("#%d %s\n",tc,res>=(int)1e9?"GAME OVER":String.valueOf(res));
+			N = Integer.parseInt(st.nextToken());
+			M = Integer.parseInt(st.nextToken());
+			
+			board = new char[N][M];
+			devils = new ArrayDeque<>();
+			devilTime = new int[N][M];
+			for(int i=0;i<N;i++)
+				Arrays.fill(devilTime[i], Integer.MAX_VALUE);
+			
+			for(int i=0;i<N;i++) {
+				board[i] = br.readLine().toCharArray();
+				for(int j=0;j<M;j++)
+					if(board[i][j]=='S') {
+						sx = i;
+						sy = j;
+					}else if(board[i][j]=='*') {
+						devils.add(new int[] {i,j});
+						devilTime[i][j] = 0;
+					}
+			}			
+			
+			goDevils();
+			
+			int res = move();
+			
+			System.out.printf("#%d %s\n",tc,res==-1?"GAME OVER":String.valueOf(res));
 		}
 	}
-	static int[][] devilCheck(){
-		Queue<int[]> devils = new ArrayDeque<>();
+	static int move() {
+		Queue<int[]> q = new ArrayDeque<>();
 		int[][] dist = new int[N][M];
 		for(int i=0;i<N;i++)
-			Arrays.fill(dist[i], (int)1e9);
-		
-		for(int i=0;i<N;i++)
-			for(int j=0;j<M;j++)
-				if(board[i][j]=='*') {
-					devils.add(new int[] {i,j});
-					dist[i][j] = 0;
-				}
-		while(!devils.isEmpty()){
-			int[] devil = devils.poll();
-		
-			for(int d=0;d<4;d++) {
-				int nx = devil[0]+dx[d];
-				int ny = devil[1]+dy[d];
-				
-				if(checkNext(nx, ny)) {
-					if(board[nx][ny]=='D') continue;
-					if(dist[nx][ny]!=(int)1e9) continue;
-					devils.add(new int[] {nx, ny});
-					dist[nx][ny] = dist[devil[0]][devil[1]]+1;
-				}
-			}
-		}
-		return dist;
-	}
-	static int sol() {
-		Queue<Node> pq = new PriorityQueue<>();
-		pq.add(new Node(sx, sy, 0));
+			Arrays.fill(dist[i], Integer.MAX_VALUE);
+		dist[sx][sy] = 0;
 		boolean[][] visited = new boolean[N][M];
-		visited[sx][sy] = true;
-		int[][] devilDist = devilCheck();
-
-		while(!pq.isEmpty()) {
-			//이동
-			Node curr = pq.poll();
-						
-			if(board[curr.x][curr.y]=='D') {
-				return curr.time;
-			}
+		
+		q.add(new int[] {sx, sy});
+		
+		while(!q.isEmpty()) {
+			int[] curr = q.poll();
+			int x = curr[0];
+			int y = curr[1];
+			
+			if(visited[x][y]) continue;
+			visited[x][y] = true;
+			
+			if(board[x][y]=='D')
+				return dist[x][y];
 			
 			for(int d=0;d<4;d++) {
-				int nx = curr.x+dx[d];
-				int ny = curr.y+dy[d];
+				int nx = x+dx[d];
+				int ny = y+dy[d];
 				
 				if(!checkNext(nx, ny)||visited[nx][ny]) continue;
-				if(board[nx][ny]=='*') continue;
-				if(curr.time+1<devilDist[nx][ny]) {
-					visited[nx][ny] = true;
-					pq.add(new Node(nx, ny, curr.time+1));
+				int cost = dist[x][y]+1;
+				if(dist[nx][ny]>cost && cost<devilTime[nx][ny]) {
+					dist[nx][ny] = cost;
+					q.add(new int[] {nx, ny});
 				}
 			}
 		}
-		
-		return (int)1e9;
+		return -1;
 	}
-	static class Node implements Comparable<Node>{
-		int x, y, time;
-		
-		Node(int x, int y, int t){
-			this.x = x;
-			this.y = y;
-			time = t;
-		}
-		
-		@Override
-		public int compareTo(Node o) {
-			return this.time-o.time;
+	private static void goDevils() {
+		while(!devils.isEmpty()) {
+			int[] curr = devils.poll();
+			
+			int x = curr[0];
+			int y = curr[1];
+			
+			for(int d=0;d<4;d++) {
+				int nx = x+dx[d];
+				int ny = y+dy[d];
+				
+				if(!checkNext(nx, ny)) continue;
+				if(board[nx][ny]=='D') continue;
+				
+				int cost = devilTime[x][y]+1;
+				if(devilTime[nx][ny] > cost) {
+					devilTime[nx][ny] = cost;
+					devils.add(new int[] {nx, ny});
+				}
+			}
 		}
 	}
 	static boolean checkNext(int x, int y) {
@@ -97,22 +109,5 @@ public class Solution {
 		if(board[x][y]=='X') return false;
 		
 		return true;
-	}
-	private static void initialize(BufferedReader br) throws IOException {
-		StringTokenizer st;
-		st = new StringTokenizer(br.readLine());
-		
-		N = Integer.parseInt(st.nextToken());
-		M = Integer.parseInt(st.nextToken());
-		board = new char[N][M];
-		
-		for(int i=0;i<N;i++) {
-			board[i] = br.readLine().toCharArray();
-			for(int j=0;j<M;j++)
-				if(board[i][j]=='S') {
-					sx = i;
-					sy = j;
-				}
-		}
 	}
 }
