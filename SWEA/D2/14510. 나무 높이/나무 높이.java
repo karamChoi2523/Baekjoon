@@ -2,49 +2,49 @@ import java.io.*;
 import java.util.*;
 
 public class Solution {
-	static int N;
-	static int[] height;
-	static int maxH;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
 		
 		int T = Integer.parseInt(br.readLine());
 		for(int tc=1;tc<=T;tc++) {
-			N = Integer.parseInt(br.readLine());
-			height = new int[N];
-			st = new StringTokenizer(br.readLine());
+			int N = Integer.parseInt(br.readLine());
+			int[] arr = new int[N];
 			
-			maxH = -1;
+			StringTokenizer st;
+			st = new StringTokenizer(br.readLine());
+			int maxH = -1;
 			for(int i=0;i<N;i++) {
-				height[i] = Integer.parseInt(st.nextToken());
-				if(maxH < height[i])
-					maxH = height[i];
+				arr[i] = Integer.parseInt(st.nextToken());
+				if(maxH < arr[i])
+					maxH = arr[i];
 			}
 			
-			int even = 0, odd = 0;
+			int even = 0;
+			int odd = 0;
 			for(int i=0;i<N;i++) {
-				int diff = maxH-height[i];
+				int diff = maxH - arr[i];
 				
 				if(diff==0) continue;
 				
 				even += diff/2;
-				odd+=diff%2;
+				odd += diff%2;
 			}
-			if(even>odd)
-				while(Math.abs(even-odd)>1) {
-					even--;
-					odd+=2;
-				}
 			
-			int day = 0;
-			if(odd>even)
-				day = odd*2 -1;
-			else if(even>odd)
-				day = even*2;
-			else
-				day = odd+even;
-			System.out.printf("#%d %d\n", tc, day);
+			int min = Math.min(even, odd);
+			even -= min;
+			odd -= min;
+			
+			int day = min*2;
+			
+			if(odd>0) {
+				day += 2*odd-1;
+			}
+			
+			if(even>0){
+				day += even+1+(even-1)/3;
+			}
+			
+			System.out.printf("#%d %d\n",tc,day);
 		}
 	}
 }
