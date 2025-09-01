@@ -43,15 +43,13 @@ public class Main {
 			st = new StringTokenizer(br.readLine());
 			int a = Integer.parseInt(st.nextToken());
 			int b = Integer.parseInt(st.nextToken());
-			
-			int pa = findParent(a);
-			int pb = findParent(b);
-			
-			if(pa==pb) {
-				answer = i+1;
-				break;
-			}
-			union(pa,pb);
+            
+            if(findParent(a)!=findParent(b)){
+                union(a, b);
+            }else{
+                answer = i+1;
+                break;
+            }
 		}
 	}
 }
