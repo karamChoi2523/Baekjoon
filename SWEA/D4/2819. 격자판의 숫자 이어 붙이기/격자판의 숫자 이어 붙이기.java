@@ -1,55 +1,53 @@
 import java.io.*;
 import java.util.*;
 
+
 public class Solution {
 	static int[][] board;
 	static int[] dx = {-1,1,0,0};
 	static int[] dy = {0,0,-1,1};
-	static Set<String> set;
+	static Set<String> hSet;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
-		
-		int T = Integer.parseInt(br.readLine());
+
+		int T = Integer.parseInt(br.readLine().trim());
+		//int T = 10;
 		for(int tc=1;tc<=T;tc++) {
-			
-			board = new int[4][4];
-			set = new HashSet<>();
-			
-			for(int i=0;i<4;i++) {
-				st = new StringTokenizer(br.readLine());
-				for(int j=0;j<4;j++)
-					board[i][j] = Integer.parseInt(st.nextToken());
-			}
+			initialize(br);
 			
 			for(int i=0;i<4;i++)
 				for(int j=0;j<4;j++)
-					dfs(i,j,new StringBuilder());
+					sol(i,j,0,"");
 			
-			System.out.printf("#%d %d\n",tc,set.size());
+			System.out.printf("#%d %d\n", tc,hSet.size());
 		}
 	}
-	static void dfs(int x, int y, StringBuilder sb) {
-		if(sb.toString().length()==7) {
-			String s = sb.toString();
-			set.add(s);
+	static void sol(int x, int y, int idx, String curr) {
+		if(idx==7) {
+			hSet.add(curr);
 			return;
 		}
 		
-		StringBuilder sb2 = new StringBuilder();
-		sb2.append(sb.toString()).append(String.valueOf(board[x][y]));
+		curr += String.valueOf(board[x][y]);
 		
 		for(int d=0;d<4;d++) {
 			int nx = x+dx[d];
 			int ny = y+dy[d];
 			
-			if(!checkNext(nx, ny)) continue;
-			dfs(nx, ny, sb2);
+			if(nx<0 || nx>=4 || ny<0 || ny>=4) continue;
+			sol(nx, ny, idx+1, curr);
 		}
 	}
-	static boolean checkNext(int x, int y) {
-		if(x<0 || x>=4 || y<0 || y>=4) return false;
+	private static void initialize(BufferedReader br) throws IOException {
+		StringTokenizer st;
 		
-		return true;
+		board = new int[4][4];
+		hSet = new HashSet<>();
+		
+		for(int i=0;i<4;i++) {
+			st = new StringTokenizer(br.readLine());
+			for(int j=0;j<4;j++)
+				board[i][j] = Integer.parseInt(st.nextToken());
+		}
 	}
 }
