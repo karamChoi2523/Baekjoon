@@ -16,13 +16,16 @@ class Solution {
         }else
         	wolf+=1;
         
-        if(sheep<=wolf) return;
+        if(sheep<=wolf){
+            visited[idx] = false;
+            return;
+        }
         
         for(int[] edge : edges) {
         	if(visited[edge[0]] && !visited[edge[1]]) {
-        		boolean[] visit = visited.clone();
-        		dfs(edge[1], visit, sheep, wolf, info, edges);
+        		dfs(edge[1], visited, sheep, wolf, info, edges);
         	}
         }
+        visited[idx] = false;
     }
 }
