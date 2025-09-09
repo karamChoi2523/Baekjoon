@@ -14,18 +14,16 @@ public class Solution {
 			int[] res = new int[N];
 			
 			int idx = 0;
-			res[0] = arr[0];
-			for(int i=1;i<N;i++) {
-				if(res[idx] < arr[i])
-					res[++idx] = arr[i];
-				else {
-					int index = Arrays.binarySearch(res, 0, idx+1, arr[i]);
-					if(index<0) res[index*-1-1] = arr[i];
-					else res[index] = arr[i];
-				}				
+			for(int i=0;i<N;i++) {
+				int index = Arrays.binarySearch(res, 0, idx, arr[i]);
+				index = index<0?index*-1-1:index;
+				res[index] = arr[i];
+				
+				if(index==idx)
+					idx++;
 			}
 			
-			System.out.printf("#%d %d\n", tc, idx+1);
+			System.out.printf("#%d %d\n", tc, idx);
 		}		
 	}
 	static void initialize(BufferedReader br) throws IOException {
