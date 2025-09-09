@@ -57,11 +57,9 @@ public class Main {
 			
 			if(idx == 2) {	//T체크
 				for(int k=d+1;k<4;k++) {
-					int kx = x+dx[k];
-					int ky = y+dy[k];
-					
-					if(kx<0 || kx>=N || ky<0 || ky>=M || visited[kx][ky]) continue;
-					max = Math.max(max, curr+board[nx][ny]+board[kx][ky]);
+					visited[nx][ny] = true;
+                    pick(x, y, idx+1, curr+board[nx][ny], visited);
+                    visited[nx][ny] = false;
 				}
 			}
 			
