@@ -1,68 +1,72 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-	static int max = Integer.MIN_VALUE;
-	static int[][] arr;
-	static boolean[][] visited;
-	static int n;
-	static int m;
-
-	static int[] dr = {-1,1,0,0};
-	static int[] dc = {0,0,-1,1};
-	
+	static int N, M;
+	static int[][] board;
+	static int max = -1;
+	static int[] dx = {-1,1,0,0};
+	static int[] dy = {0,0,-1,1};
 	public static void main(String[] args) throws IOException {
-		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(bf.readLine());
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
 		
-		n = Integer.parseInt(st.nextToken());
-		m = Integer.parseInt(st.nextToken());
-		arr = new int[n][m];
-		visited = new boolean[n][m];
+		st = new StringTokenizer(br.readLine());
 
-		for(int i = 0; i < n; i++) {
-			st = new StringTokenizer(bf.readLine());
-			for(int j = 0; j < m; j++) {
-				arr[i][j] = Integer.parseInt(st.nextToken());
-			}
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		
+		board = new int[N][M];
+		for(int i=0;i<N;i++) {
+			st = new StringTokenizer(br.readLine());
+			for(int j=0;j<M;j++)
+				board[i][j] = Integer.parseInt(st.nextToken());
 		}
+		
+		max = -1;
 
-		for(int i = 0; i < n; i++) {
-			for(int j = 0; j < m; j++) {
+		boolean[][] visited = new boolean[N][M];
+		for(int i=0;i<N;i++)
+			for(int j=0;j<M;j++) {
 				visited[i][j] = true;
-				dfs(i,j,arr[i][j],1);
+				pick(i,j,1,board[i][j],visited);
 				visited[i][j] = false;
 			}
-		}
-
+		
 		System.out.println(max);
 	}
-
-	private static void dfs(int x, int y, int sum, int cnt) {
-		if(cnt == 4) {
-			max = Math.max(max, sum);
+	//연결된 네 곳을 선택
+	private static void pick(int x, int y, int idx, int curr, boolean[][] visited) {
+		if(idx == 4) {
+			max = Math.max(max, curr);
 			return;
 		}
-
-		for(int i = 0; i < 4; i++) {
-			int dx = x + dr[i];
-			int dy = y + dc[i];
-
-			if(dx>=0 && dy>=0 && dx<n && dy<m)
-			if(!visited[dx][dy]) {
-				if(cnt == 2) {
-					visited[dx][dy] = true;
-					dfs(x, y, sum + arr[dx][dy], cnt + 1);
-					visited[dx][dy] = false;
+		
+		//T체크
+		if(idx==2) {
+			for(int d=0;d<4;d++) {
+				int nx = x+dx[d];
+				int ny = y+dy[d];
+				
+				if(nx<0 || nx>=N || ny<0 || ny>=M || visited[nx][ny]) continue;
+				for(int k=d+1;k<4;k++) {
+					int kx = x+dx[k];
+					int ky = y+dy[k];
+					
+					if(kx<0 || kx>=N || ky<0 || ky>=M || visited[kx][ky]) continue;
+					max = Math.max(max, curr+board[nx][ny]+board[kx][ky]);
 				}
-
-				visited[dx][dy] = true;
-				dfs(dx, dy, sum + arr[dx][dy], cnt + 1);
-				visited[dx][dy] = false;
 			}
-		}		
+		}
+		
+		for(int d=0;d<4;d++) {
+			int nx = x+dx[d];
+			int ny = y+dy[d];
+			
+			if(nx<0 || nx>=N || ny<0 || ny>=M || visited[nx][ny]) continue;
+			visited[nx][ny] = true;
+			pick(nx, ny, idx+1, curr+board[nx][ny], visited);
+			visited[nx][ny] = false;
+		}
 	}
-
 }
