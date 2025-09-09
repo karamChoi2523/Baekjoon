@@ -7,6 +7,7 @@ public class Main {
 	static int max = -1;
 	static int[] dx = {-1,1,0,0};
 	static int[] dy = {0,0,-1,1};
+	static int maxCell;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st;
@@ -19,8 +20,10 @@ public class Main {
 		board = new int[N][M];
 		for(int i=0;i<N;i++) {
 			st = new StringTokenizer(br.readLine());
-			for(int j=0;j<M;j++)
+			for(int j=0;j<M;j++) {
 				board[i][j] = Integer.parseInt(st.nextToken());
+				maxCell = Math.max(maxCell, board[i][j]);
+			}
 		}
 		
 		max = -1;
@@ -42,13 +45,17 @@ public class Main {
 			return;
 		}
 		
-		//T체크
-		if(idx==2) {
-			for(int d=0;d<4;d++) {
-				int nx = x+dx[d];
-				int ny = y+dy[d];
-				
-				if(nx<0 || nx>=N || ny<0 || ny>=M || visited[nx][ny]) continue;
+		//가지치기
+		int upper = curr + (4-idx) * maxCell;
+		if(upper <= max) return;
+		
+		for(int d=0;d<4;d++) {
+			int nx = x+dx[d];
+			int ny = y+dy[d];
+			
+			if(nx<0 || nx>=N || ny<0 || ny>=M || visited[nx][ny]) continue;
+			
+			if(idx == 2) {	//T체크
 				for(int k=d+1;k<4;k++) {
 					int kx = x+dx[k];
 					int ky = y+dy[k];
@@ -57,13 +64,7 @@ public class Main {
 					max = Math.max(max, curr+board[nx][ny]+board[kx][ky]);
 				}
 			}
-		}
-		
-		for(int d=0;d<4;d++) {
-			int nx = x+dx[d];
-			int ny = y+dy[d];
 			
-			if(nx<0 || nx>=N || ny<0 || ny>=M || visited[nx][ny]) continue;
 			visited[nx][ny] = true;
 			pick(nx, ny, idx+1, curr+board[nx][ny], visited);
 			visited[nx][ny] = false;
