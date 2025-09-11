@@ -2,6 +2,9 @@ import java.util.*;
 import java.io.*;
 
 public class Solution {
+	static int N;
+	static int[][] graph;
+	static int count;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
@@ -10,10 +13,10 @@ public class Solution {
 		int T = Integer.parseInt(br.readLine());
 		for(int tc=1;tc<=T;tc++) {
 			
-			int N = Integer.parseInt(br.readLine());
+			N = Integer.parseInt(br.readLine());
 			int M = Integer.parseInt(br.readLine());
 			
-			int[][] graph = new int[N+1][N+1];
+			graph = new int[N+1][N+1];
 			for(int i=1;i<N+1;i++)
 				Arrays.fill(graph[i], (int)1e9);
 			
@@ -23,24 +26,39 @@ public class Solution {
 				int a = Integer.parseInt(st.nextToken());
 				int b = Integer.parseInt(st.nextToken());
 			
-				graph[a][b] = 1;
+				graph[a][b] = 1;	//a보다 b가 크다
 			}
 			
-			for(int k=1;k<N+1;k++)
-				for(int i=1;i<N+1;i++)
-					for(int j=1;j<N+1;j++)
-						graph[i][j] = Math.min(graph[i][j], graph[i][k]+graph[k][j]);
 			int answer = 0;
+			
+			//모든 학생에 대해 자신보다 키가 큰/작은 학생 탐색
 			for(int i=1;i<N+1;i++) {
-				int cnt = 0;
-				for(int j=1;j<N+1;j++)
-					if(graph[i][j]!=(int)1e9 || graph[j][i]!=(int)1e9)
-						cnt++;
-				if(cnt==N-1)
+				count = 0;
+				boolean[] visited = new boolean[N+1];
+				gtDFS(i, visited);	//수행이 끝나면 나보다 큰 학생 count
+				ltDFS(i, visited);
+				
+				if(count==N-1)
 					answer++;
 			}
 			
 			System.out.printf("#%d %d\n", tc, answer);
 		}
+	}
+	static void gtDFS(int curr, boolean[] visited) {
+		visited[curr] = true;
+		for(int i=1;i<N+1;i++)
+			if(graph[curr][i]==1 && !visited[i]) {
+				++count;
+				gtDFS(i, visited);
+			}
+	}
+	static void ltDFS(int curr, boolean[] visited) {
+		visited[curr] = true;
+		for(int i=1;i<N+1;i++)
+			if(graph[i][curr]==1 && !visited[i]) {
+				++count;
+				ltDFS(i, visited);
+			}
 	}
 }
