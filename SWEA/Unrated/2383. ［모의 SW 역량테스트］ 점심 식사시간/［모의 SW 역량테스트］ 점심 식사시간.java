@@ -87,37 +87,18 @@ public class Solution {
 	private static int processDown(ArrayList<Person> list, int k) {
 		if(list.size()==0)
 			return 0;
-
-		Collections.sort(list);	//도착순 정렬
-
-		int time = list.get(0).arrivalTime;
-		int size = list.size();	//계단 이용자수
-		int ingCnt=0, cCnt=0;	//내려가는 중, 완료된 사람수
-
-		while(true) {	//매분마다 사람들의 상태를 업데이트
-			for(int i=0;i<size;i++) {
-				Person p = list.get(i);
-				if(p.status==C) continue;
-				if(p.arrivalTime == time)
-					p.status = W;
-				else if(p.status==W && ingCnt<3) {
-					p.status = D;
-					p.downCnt = 1;
-					ingCnt++;
-				}else if(p.status==D) {
-					if(p.downCnt < k)
-						p.downCnt++;
-					else {
-						p.status = C;
-						ingCnt--;
-						cCnt++;
-					}
-				}
-			}
-			if(cCnt == size) break;
-			time++;
+		Collections.sort(list);
+		
+		int size = list.size()+3;
+		int[] D = new int[size];	//3인덱스가 가장 빨리 도착하는 사람0을 의미. 4인덱스는 그 다음 도착...
+		for(int i=3;i<size;i++) {
+			Person p = list.get(i-3);	//실제 리스트보다 3을 늘렸으므로 i-3
+			if(D[i-3]<=p.arrivalTime+1)
+				D[i] = p.arrivalTime+1+k;	//계단에 있는 사람이 계단에 머무르는 시간
+			else
+				D[i] = D[i-3]+k;	//대기를 해야 하면 이 사람이 빠져야 들어가기 가능
 		}
-		return time;
+		return D[size-1];
 	}
 	static final int M=1,W=2,D=3,C=4;	//이동, 대기, 내려가는 중, 완료
 	static class Person implements Comparable<Person>{
