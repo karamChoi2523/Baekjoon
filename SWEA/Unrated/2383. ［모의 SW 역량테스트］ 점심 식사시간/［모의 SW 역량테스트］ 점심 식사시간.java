@@ -70,7 +70,7 @@ public class Solution {
 
 		for(int i=0;i<cnt;i++) {
 			Person p = pList.get(i);
-			p.init();	//초기화
+			//p.init();	//초기화
 			int no = select[i];	//계단 번호
 
 			p.arrivalTime = Math.abs(p.calTime(sList[no][0],sList[no][1]));
@@ -89,6 +89,7 @@ public class Solution {
 			return 0;
 		Collections.sort(list);
 		
+		//status, downCnt가 필요없어짐
 		int size = list.size()+3;
 		int[] D = new int[size];	//3인덱스가 가장 빨리 도착하는 사람0을 의미. 4인덱스는 그 다음 도착...
 		for(int i=3;i<size;i++) {
@@ -100,21 +101,23 @@ public class Solution {
 		}
 		return D[size-1];
 	}
-	static final int M=1,W=2,D=3,C=4;	//이동, 대기, 내려가는 중, 완료
+	//static final int M=1,W=2,D=3,C=4;	//이동, 대기, 내려가는 중, 완료
 	static class Person implements Comparable<Person>{
-		int x, y, status, arrivalTime, downCnt;	//내려간 계단 수
+		int x, y, arrivalTime;
+		//int status, downCnt;	//내려간 계단 수
 
 		public Person(int x, int y) {
 			this.x = x;
 			this.y = y;
+			arrivalTime = 0;
 		}
 		public int calTime(int x, int y) {
 			return Math.abs(this.x-x)+Math.abs(this.y-y);
 		}
-		void init() {
-			arrivalTime = downCnt = 0;
-			status = M;
-		}
+//		void init() {
+//			arrivalTime = downCnt = 0;
+//			status = M;
+//		}
 
 		@Override
 		public int compareTo(Person o) {
