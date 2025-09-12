@@ -25,15 +25,6 @@ public class Solution {
 				stuffs.add(new Stuff(x, y));
 			}
 			
-			Collections.sort(stuffs, new Comparator<Stuff>() {
-				@Override
-				public int compare(Stuff o1, Stuff o2) {
-					if(o1.x==o2.x)
-						return Integer.compare(o1.y, o2.y);
-					return Integer.compare(o1.x, o2.x);
-				}
-			});
-			
 			min = Long.MAX_VALUE;
 			visited = new boolean[N];
 			pick(0, 0);
