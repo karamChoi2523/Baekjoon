@@ -18,7 +18,7 @@ public class Solution {
 					board[i][j] = temp[j]-'0';
 			}
 			
-			int res = dijkstra(N, board);
+			int res = dijkstra2(N, board);
 			
 			System.out.printf("#%d %d\n", tc, res);
 		}
@@ -57,6 +57,38 @@ public class Solution {
 				if(cost < dist[nx][ny]) {
 					dist[nx][ny] = cost;
 					pq.add(new int[] {nx, ny, cost});
+				}
+			}
+		}
+		return dist[N-1][N-1];
+	}
+	private static int dijkstra2(int N, int[][] board) {
+			Queue<int[]> q = new ArrayDeque<>();
+		
+		int[][] dist = new int[N][N];
+		for(int i=0;i<N;i++)
+			Arrays.fill(dist[i], (int)1e9);
+		dist[0][0] = 0;
+		q.add(new int[] {0,0});
+		
+		while(!q.isEmpty()) {
+			int[] curr = q.poll();
+			int x = curr[0];
+			int y = curr[1];
+			
+			if(x==N-1 && y==N-1){
+				continue;
+			}
+			
+			for(int d=0;d<4;d++) {
+				int nx = x+dx[d];
+				int ny = y+dy[d];
+				
+				if(nx<0 || nx>=N || ny<0 || ny>=N) continue;
+				int cost = dist[x][y] + board[nx][ny];
+				if(cost < dist[nx][ny]) {
+					dist[nx][ny] = cost;
+					q.add(new int[] {nx, ny});
 				}
 			}
 		}
