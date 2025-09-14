@@ -1,47 +1,41 @@
+import java.util.*;
 import java.io.*;
-import java.util.StringTokenizer;
 
 public class Main {
-	static int n,m;
-	static int[][] map;
-	static int[][] record;
-
+	static int[] dx = {1,0,1};
+	static int[] dy = {0,1,1};
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
 		
-		StringTokenizer st = new StringTokenizer(br.readLine());
+		st = new StringTokenizer(br.readLine());
 
-		n =Integer.valueOf(st.nextToken());
-		m =Integer.valueOf(st.nextToken());
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
 		
-		map = new int[n][m];
-		record = new int[n][m];
-
-		
-		for(int i=0;i<n;i++) {
+		int[][] board = new int[N][M];
+		for(int i=0;i<N;i++) {
 			st = new StringTokenizer(br.readLine());
-			for(int j=0;j<m;j++)
-				map[i][j] =Integer.valueOf(st.nextToken());
+			for(int j=0;j<M;j++)
+				board[i][j] = Integer.parseInt(st.nextToken());
 		}
-	
-		solution();
 		
-		System.out.println(record[n-1][m-1]);
+		int[][] dp = new int[N][M];
+		dp[0][0] = board[0][0];
+		
+		for(int i=0;i<N;i++) {
+			for(int j=0;j<M;j++)
+				for(int d=0;d<3;d++) {
+					int nx = i+dx[d];
+					int ny = j+dy[d];
+					
+					if(nx<0 || nx>=N || ny<0 || ny>=M) continue;
+					
+					dp[nx][ny] = Math.max(dp[nx][ny], dp[i][j]+board[nx][ny]);
+				}
+		}
+		
+		
+		System.out.println(dp[N-1][M-1]);
 	}
-
-	private static void solution() {
-		record[0][0] = map[0][0];
-		
-		for(int i=1;i<m;i++)
-			record[0][i] = record[0][i-1] + map[0][i];
-		
-		for(int i=1;i<n;i++)
-			record[i][0] = record[i-1][0]+map[i][0];
-		
-		for(int i=1;i<n;i++)
-			for(int j=1;j<m;j++)
-				record[i][j] = Math.max(record[i-1][j], record[i][j-1])+map[i][j];
-		
-	}
-
 }
