@@ -1,80 +1,77 @@
-import java.io.*;
 import java.util.*;
-
+import java.io.*;
 
 public class Main {
-	static class Edge{
-		int to;
-		int cost;
-		
-		public Edge(int t, int c) {
-			to = t;
-			cost = c;
-		}
-	}
-	
-	static int INF = (int)1e9;
-	
+	static ArrayList<Node>[] adj;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		
-		int n = Integer.valueOf(br.readLine());
-		int m = Integer.valueOf(br.readLine());
-		
-		solutionA(br, n, m);
-		solutionB(br, n, m);
-	}
-	private static void solutionA(BufferedReader br, int n, int m) throws IOException {
-		// 인접리스트
-		ArrayList<ArrayList<Edge>> a = new ArrayList<>(); 	//인접리스트
-		int[] dist = new int[n+1];
-		boolean[] visited = new boolean[n+1];
-		
-		Arrays.fill(dist, INF);
-		for(int i=0;i<n+1;i++)
-			a.add(new ArrayList<>());
-		
-		for(int i=0;i<m;i++) {
-			StringTokenizer st = new StringTokenizer(br.readLine());
+		StringTokenizer st;
 
-			int from = Integer.valueOf(st.nextToken());
-			int to = Integer.valueOf(st.nextToken());
-			int cost = Integer.valueOf(st.nextToken());
-			
-			a.get(from).add(new Edge(to, cost));
+		int N = Integer.parseInt(br.readLine());
+		int M = Integer.parseInt(br.readLine());
+		
+		adj = new ArrayList[N+1];
+		for(int i=1;i<N+1;i++)
+			adj[i] = new ArrayList<>();
+		
+		for(int i=0;i<M;i++) {
+			st = new StringTokenizer(br.readLine());
+
+			int s = Integer.parseInt(st.nextToken());
+			int e = Integer.parseInt(st.nextToken());
+			int c = Integer.parseInt(st.nextToken());
+		
+			adj[s].add(new Node(e, c));
 		}
-		
-		StringTokenizer st = new StringTokenizer(br.readLine());
+		st = new StringTokenizer(br.readLine());
 
-		int start = Integer.valueOf(st.nextToken());
-		int end = Integer.valueOf(st.nextToken());
+		int start = Integer.parseInt(st.nextToken());
+		int end = Integer.parseInt(st.nextToken());		
 		
+		int res = dijkstra(N, start, end);
+		
+		System.out.println(res);
+	}
+	static int dijkstra(int N, int start, int end) {
+		Queue<Node> pq = new PriorityQueue<>();
+		int[] dist = new int[N+1];
+		Arrays.fill(dist, (int)1e9);
 		dist[start] = 0;
+		pq.add(new Node(start, 0));
 		
-		for(int k=0;k<n-1;k++) {
-			int temp = INF+1;
-			int x = -1;
+//		boolean[] visited = new boolean[N+1];
+		
+		while(!pq.isEmpty()) {
+			Node curr = pq.poll();
+//			
+//			if(visited[curr.node]) continue;
+//			visited[curr.node] = true;
 			
-			for(int i=1;i<n+1;i++) {
-				if(!visited[i] && dist[i] < temp) {
-					temp = dist[i];
-					x = i;
+			if(curr.node==end)
+				return curr.cost;
+			
+			for(Node next : adj[curr.node]) {
+				int cost = dist[curr.node]+next.cost;
+				
+				if(dist[next.node] > cost) {
+					dist[next.node] = cost;
+					pq.add(new Node(next.node, cost));
 				}
 			}
-			
-			visited[x] = true;	//선택한 정점
-			for(int i=0;i<a.get(x).size();i++) {
-				int to = a.get(x).get(i).to;
-				int cost = a.get(x).get(i).cost;
-				
-				if(dist[to] > dist[x]+cost)
-					dist[to] = dist[x]+cost;
-			}
 		}
-		
-		System.out.println(dist[end]);
+		return dist[end];
 	}
-	private static void solutionB(BufferedReader br, int n, int m) throws IOException {
-		// 인접행렬
+	static class Node implements Comparable<Node>{
+		int node, cost;
+
+		public Node(int node, int cost) {
+			this.node = node;
+			this.cost = cost;
+		}
+
+		@Override
+		public int compareTo(Node o) {
+			return this.cost-o.cost;
+		}
 	}
 }
