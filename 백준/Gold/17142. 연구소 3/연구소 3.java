@@ -1,14 +1,14 @@
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
 public class Main {
-	static int N, M;
-	static int[][] board;
-	static int[][] select;
-	static ArrayList<int[]> list;
 	static int[] dx = {-1,1,0,0};
 	static int[] dy = {0,0,-1,1};
-	static int min = Integer.MAX_VALUE;
+	static int[][] board;
+	static ArrayList<int[]> pos;
+	static Cell[] cells;
+	static int N, M;
+	static int min;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st;
@@ -16,76 +16,88 @@ public class Main {
 		st = new StringTokenizer(br.readLine());
 		N = Integer.parseInt(st.nextToken());
 		M = Integer.parseInt(st.nextToken());
-		
+
 		board = new int[N][N];
-		list = new ArrayList<>();
+		pos = new ArrayList<>();
+		cells = new Cell[M];
+		
 		for(int i=0;i<N;i++) {
 			st = new StringTokenizer(br.readLine());
 			for(int j=0;j<N;j++) {
 				board[i][j] = Integer.parseInt(st.nextToken());
 				if(board[i][j]==2)
-					list.add(new int[] {i,j});
+					pos.add(new int[] {i,j});
 			}
 		}
-		select = new int[M][2];
-		combination(0, 0);
+		
+		min = Integer.MAX_VALUE;
+		comb(0,0);
 		
 		System.out.println(min==Integer.MAX_VALUE?-1:min);
 	}
-	static void combination(int idx, int k) {
+	static void comb(int idx, int k) {
 		if(k==M) {
-			bfs();
+			int res = play();
+			min = Math.min(min, res);
 			return;
 		}
 		
-		if(idx==list.size()) return;
+		if(idx>=pos.size()) return;
 		
-		select[k] = list.get(idx);
-		combination(idx+1, k+1);
-		combination(idx+1, k);
+		int[] curr = pos.get(idx);
+		cells[k] = new Cell(curr[0], curr[1]);
+		comb(idx+1,k+1);
+		comb(idx+1,k);
 	}
-	static void bfs() {
-		Queue<int[]> q = new LinkedList<>();
-		boolean[][] visited = new boolean[N][N];
-
-		int[][] map = new int[N][N];
+	private static int play() {
+		Queue<Cell> q = new ArrayDeque<>();
+		int[][] visited = new int[N][N];
 		for(int i=0;i<N;i++)
-			Arrays.fill(map[i], -1);
-		for(int[] pick : select) {
-			q.add(pick);
-			map[pick[0]][pick[1]] = 0;
-			visited[pick[0]][pick[1]] = true;
-		}
+			Arrays.fill(visited[i], Integer.MAX_VALUE);
 		
+		for(Cell cell : cells) {
+			q.add(cell);
+			visited[cell.x][cell.y] = 0;
+		}
+		int max = 0;
 		while(!q.isEmpty()) {
-			int[] curr = q.poll();
-			int cx = curr[0];
-			int cy = curr[1];
-			
-			for(int d=0;d<4;d++) {
-				int nx = cx+dx[d];
-				int ny = cy+dy[d];
+			int size = q.size();
+			for(int i=0;i<size;i++) {
+				Cell c = q.poll();
 				
-				if(checkNext(nx, ny) && map[nx][ny]==-1) {
-					map[nx][ny] = map[cx][cy]+1;
-					q.add(new int[] {nx, ny});
+				for(int d=0;d<4;d++) {
+					int nx = c.x+dx[d];
+					int ny = c.y+dy[d];
+					
+					if(!checkNext(nx,ny)||visited[nx][ny]!=Integer.MAX_VALUE) continue;
+					q.add(new Cell(nx, ny));
+					visited[nx][ny] = visited[c.x][c.y]+1;
+					if(board[nx][ny]==0)
+						max = Math.max(max, visited[nx][ny]);
+					
+					if(max>=min) return Integer.MAX_VALUE;
 				}
 			}
 		}
-		int time = 0;
+		
 		for(int i=0;i<N;i++)
 			for(int j=0;j<N;j++)
-				if(board[i][j]==0) {
-					if(map[i][j]==-1) return;
-					time = Math.max(time, map[i][j]);
-				}
-		min = Math.min(time, min);
+				if(visited[i][j]==Integer.MAX_VALUE && board[i][j]==0)
+					return Integer.MAX_VALUE;
+		
+		return max;
 	}
 	static boolean checkNext(int x, int y) {
 		if(x<0 || x>=N || y<0 || y>=N) return false;
-		
 		if(board[x][y]==1) return false;
-		
 		return true;
+	}
+	static class Cell{
+		int x, y;
+
+		public Cell(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}		
 	}
 }
