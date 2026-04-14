@@ -2,10 +2,8 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-	//크루스칼
 	static int V, E;
 	static int[] parent;
-	
 	static class Edge implements Comparable<Edge>{
 		int a, b;
 		long cost;
@@ -15,28 +13,24 @@ public class Main {
 			this.b = b;
 			cost = c;
 		}
-
+		
 		@Override
 		public int compareTo(Edge o) {
-			return (int)(this.cost - o.cost);
+			return (int)(this.cost-o.cost);
 		}
-		
-		
 	}
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		
-		V = Integer.parseInt(st.nextToken());	//정점 개수
-		E = Integer.parseInt(st.nextToken());	//간선의 수
+		V = Integer.parseInt(st.nextToken());
+		E = Integer.parseInt(st.nextToken());
 		
-		//초기에 부모 = 나 자신
 		parent = new int[V+1];
-		for(int i=1;i<V+1;i++)
+		for(int i=0;i<V+1;i++)
 			parent[i] = i;
 		
-		// 가중치에 따라 오름차순 정렬
 		PriorityQueue<Edge> pq = new PriorityQueue<>();
 		
 		for(int i=0;i<E;i++) {
@@ -46,14 +40,10 @@ public class Main {
 			int b = Integer.parseInt(st.nextToken());
 			long c = Long.parseLong(st.nextToken());
 			
-			if(a<=b)
-				pq.add(new Edge(a, b, c));
-			else
-				pq.add(new Edge(b, a, c));
+			pq.add(new Edge(a,b,c));
 		}
 		
 		long answer = 0;
-		
 		while(!pq.isEmpty()) {
 			Edge curr = pq.poll();
 			
@@ -70,7 +60,6 @@ public class Main {
 			parent[x] = parent[parent[x]];
 			x = parent[x];
 		}
-		
 		return x;
 	}
 	static void union(int x, int y) {
