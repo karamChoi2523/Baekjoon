@@ -4,7 +4,7 @@
 
 ### 성능 요약
 
-메모리: 53012 KB, 시간: 540 ms
+메모리: 53076 KB, 시간: 536 ms
 
 ### 분류
 
@@ -12,7 +12,7 @@
 
 ### 제출 일자
 
-2026년 4월 16일 21:38:49
+2026년 4월 16일 21:50:16
 
 ### 문제 설명
 
@@ -20,11 +20,11 @@
 
 <p>살기 좋은 나라 1등으로 꼽힌 이후 외국인 방문객들이 많아졌고, 그에 따라 전기 소비율이 증가하여 전기가 많이 부족한 상황이 되었다. 따라서 서강 나라의 대통령은 최근 개발이 완료된 YNY발전소 프로젝트를 진행 하기로 하였다. 발전소를 만들 때 중요한 것은 발전소 건물과 도시로 전기를 공급해 줄 케이블이다. 발전소는 이미 특정 도시에 건설되어 있고, 따라서 추가적으로 드는 비용은 케이블을 설치할 때 드는 비용이 전부이다. 이 프로젝트의 문제는 케이블을 설치할 때 드는 비용이 굉장히 크므로 이를 최소화해서 설치하여 모든 도시에 전기를 공급하는 것이다. 여러분은 N개의 도시가 있고 M개의 두 도시를 연결하는 케이블의 정보와 K개의 YNY발전소가 설치된 도시가 주어지면 케이블 설치 비용을 최소로 사용하여 모든 도시에 전기가 공급할 수 있도록 해결해야 한다. 중요한 점은 어느 한 도시가 두 개의 발전소에서 전기를 공급받으면 낭비가 되므로 케이블이 연결되어있는 도시에는 발전소가 반드시 하나만 존재해야 한다. 아래 Figure 1를 보자. 9개의 도시와 3 개의 YNY발전소(A,B,I)가 있고, 각각의 도시들을 연결할 때 드는 비용이 주어진다.</p>
 
-<p style="text-align:center"><img alt="" src="" style="height:199px; width:582px"></p>
+<p style="text-align:center"><img alt="" src="https://www.acmicpc.net/upload/images2/E1.png" style="height:199px; width:582px"></p>
 
 <p style="text-align:center">Figure 1</p>
 
-<p style="text-align:center"><img alt="" src="" style="height:198px; width:582px"></p>
+<p style="text-align:center"><img alt="" src="https://www.acmicpc.net/upload/images2/E2.png" style="height:198px; width:582px"></p>
 
 <p style="text-align:center">Figure 2</p>
 

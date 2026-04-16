@@ -63,20 +63,17 @@ public class Main {
 			if(list.contains(pu) && list.contains(pv)) continue;
 			
 			if(pu != pv) {
-				union(curr.u, curr.v);
+				union(pu, pv);
 				answer += curr.w;
 			}
 		}
 		System.out.println(answer);
 	}
 	static void union(int x, int y) {
-		int px = findParent(x);
-		int py = findParent(y);
-		
-		if(list.contains(px) && !list.contains(py))
-			parent[py] = px;
+		if(list.contains(x) && !list.contains(y))
+			parent[y] = x;
 		else
-			parent[px] = py;
+			parent[x] = y;
 	}
 	
 	static int findParent(int x) {
