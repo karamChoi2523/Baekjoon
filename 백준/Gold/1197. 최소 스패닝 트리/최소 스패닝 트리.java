@@ -6,17 +6,17 @@ public class Main {
 	static int[] parent;
 	static class Edge implements Comparable<Edge>{
 		int a, b;
-		long cost;
+		long c;
 		
 		public Edge(int a, int b, long c) {
 			this.a = a;
 			this.b = b;
-			cost = c;
+			this.c = c;
 		}
 		
 		@Override
 		public int compareTo(Edge o) {
-			return (int)(this.cost-o.cost);
+			return (int)(this.c-o.c);
 		}
 	}
 	public static void main(String[] args) throws IOException {
@@ -28,14 +28,15 @@ public class Main {
 		E = Integer.parseInt(st.nextToken());
 		
 		parent = new int[V+1];
-		for(int i=0;i<V+1;i++)
+		
+		for(int i=1;i<V+1;i++)
 			parent[i] = i;
+
+		PriorityQueue<Edge> pq = new PriorityQueue<Edge>();
 		
-		PriorityQueue<Edge> pq = new PriorityQueue<>();
-		
-		for(int i=0;i<E;i++) {
+		while(E-->0) {
 			st = new StringTokenizer(br.readLine());
-			
+
 			int a = Integer.parseInt(st.nextToken());
 			int b = Integer.parseInt(st.nextToken());
 			long c = Long.parseLong(st.nextToken());
@@ -47,26 +48,27 @@ public class Main {
 		while(!pq.isEmpty()) {
 			Edge curr = pq.poll();
 			
-			if(findParent(curr.a)!=findParent(curr.b)) {
+			if(findParent(curr.a) != findParent(curr.b)) {
 				union(curr.a, curr.b);
-				answer += curr.cost;
+				answer += curr.c;
 			}
 		}
 		
 		System.out.println(answer);
 	}
+	static void union(int x, int y) {
+		int px = findParent(x);
+		int py = findParent(y);
+		
+		if(px<py) parent[py] = px;
+		else parent[px] = py;
+	}
+	
 	static int findParent(int x) {
 		while(x!=parent[x]) {
 			parent[x] = parent[parent[x]];
 			x = parent[x];
 		}
 		return x;
-	}
-	static void union(int x, int y) {
-		int px = findParent(x);
-		int py = findParent(y);
-		
-		if(px<=py) parent[py] = px;
-		else parent[px] = py;
 	}
 }
