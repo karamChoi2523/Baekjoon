@@ -57,8 +57,8 @@ public class Main {
 		while(!edges.isEmpty()) {
 			Edge curr = edges.poll();
 			
-			int pu = findParent(curr.u);
-			int pv = findParent(curr.v);
+			int pu = getParent(curr.u);
+			int pv = getParent(curr.v);
 			
 			if(list.contains(pu) && list.contains(pv)) continue;
 			
@@ -82,5 +82,9 @@ public class Main {
 			x = parent[x];
 		}
 		return x;
+	}
+	static int getParent(int x) {
+		if(parent[x]==x) return x;
+		return parent[x] = getParent(parent[x]);
 	}
 }
