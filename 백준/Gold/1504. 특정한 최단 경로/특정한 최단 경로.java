@@ -1,102 +1,114 @@
 import java.io.*;
 import java.util.*;
 
-
 public class Main {
+	static int N, E;
+	static int v1, v2;
+	static ArrayList<Node>[] adj;
+	
 	static class Node implements Comparable<Node>{
-		int e;
-		int cost;
+		int node;
+		long cost;
 		
-		public Node(int e, int c) {
-			this.e = e;
-			cost = c;
+		public Node(int node, long c) {
+			this.node = node;
+			this.cost = c;
 		}
 		
 		@Override
 		public int compareTo(Node o) {
-			return this.cost-o.cost;
+			return (int)(this.cost - o.cost);
 		}
 	}
-	static int n,e;
-	static ArrayList<Node>[] adj;
-	static int[] dist;
-	static boolean[] check;
-	static int INF = (int)2e8;
-	//다익스트라 - 한 노드에서 모든 노드 사이의 최단거리
-	//1->v1->v2->N
-	//1->v2->v1->N
+
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-		
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		n = Integer.valueOf(st.nextToken());
-		e = Integer.valueOf(st.nextToken());
+
+		N = Integer.parseInt(st.nextToken());
+		E = Integer.parseInt(st.nextToken());
 		
-		adj = new ArrayList[n+1];
-		dist = new int[n+1];
-		check = new boolean[n+1];
+		adj = new ArrayList[N+1];
 		
-		Arrays.fill(dist, INF);
-		
-		for(int i=1;i<n+1;i++)
+		for(int i=1;i<N+1;i++)
 			adj[i] = new ArrayList<>();
 		
-		for(int i=0;i<e;i++) {
+		for(int i=0;i<E;i++) {
 			st = new StringTokenizer(br.readLine());
-			int a = Integer.valueOf(st.nextToken());
-			int b = Integer.valueOf(st.nextToken());
-			int c = Integer.valueOf(st.nextToken());
 			
-			adj[a].add(new Node(b, c));
-			adj[b].add(new Node(a, c));
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			long c = Long.parseLong(st.nextToken());
+			
+			adj[a].add(new Node(b,c));
+			adj[b].add(new Node(a,c));
 		}
 
 		st = new StringTokenizer(br.readLine());
-		int v1 = Integer.valueOf(st.nextToken());
-		int v2 = Integer.valueOf(st.nextToken());
+		v1 = Integer.parseInt(st.nextToken());
+		v2 = Integer.parseInt(st.nextToken());
 		
-		//(1) 1->v1->v2->N
-		int first=0;
-		first+=dijkstra(1, v1);
-		first+=dijkstra(v1, v2);
-		first+=dijkstra(v2, n);
+		long res1 = -1, res2 = -1;
+
+		// 1-> v1 -> v2 -> N
+		long r1 = dijkstra(1, v1);
+		if(r1 != -1) {
+			long r2 = dijkstra(v1, v2);
+			if(r2 != -1) {
+				long r3 = dijkstra(v2, N);
+				if(r3 != -1)
+					res1 = r1 + r2 + r3;
+			}
+		}
+		res1 = res1==-1?Integer.MAX_VALUE:res1;
 		
-		//(2) 1->v2->v1->N
-		int second=0;
-		second+=dijkstra(1, v2);
-		second+=dijkstra(v2, v1);
-		second+=dijkstra(v1, n);
+		if(v2!=N) {
+			// 1-> v2 -> v1 -> N
+			long rr1 = dijkstra(1, v2);
+			if(rr1 != -1) {
+				long rr2 = dijkstra(v2, v1);
+				if(rr2 != -1) {
+					long rr3 = dijkstra(v1, N);
+					if(rr3 != -1)
+						res2 = rr1 + rr2 + rr3;
+				}
+			}
+		}
+		res2 = res2==-1?Integer.MAX_VALUE:res2;		
 		
-		int ans = (first >= INF && second>=INF)?-1 : Math.min(first, second);
-		
-		System.out.println(ans);
+		long answer = Math.min(res1, res2);
+		System.out.println(answer == Integer.MAX_VALUE?-1:answer);
 	}
-	private static int dijkstra(int start, int end) {
-		Arrays.fill(dist, INF);
-		Arrays.fill(check, false);
-		boolean[] check = new boolean[n+1];
+	static long dijkstra(int start, int end) {
+		PriorityQueue<Node> pq = new PriorityQueue<Node>();
+		int[] visited = new int[N+1];
+		long[] dist = new long[N+1];
 		
-		PriorityQueue<Node> pq = new PriorityQueue<>();
-		pq.offer(new Node(start, 0));
-		
-		dist[start]=0;
+		Arrays.fill(visited, 2);
+		Arrays.fill(dist, Integer.MAX_VALUE);
+		dist[start] = 0;
+		pq.add(new Node(start, 0));
 		
 		while(!pq.isEmpty()) {
 			Node curr = pq.poll();
 			
-			if(!check[curr.e]) {
-				check[curr.e] = true;
+			if(visited[curr.node]==0) continue;
+			visited[curr.node]--;
+			
+			if(curr.node == end) {
+				break;
+			}
+			
+			for(Node next : adj[curr.node]) {
+				long cost = next.cost + dist[curr.node];
 				
-				for(Node node : adj[curr.e]) {
-					if(!check[node.e] && dist[node.e] > dist[curr.e]+node.cost) {
-						dist[node.e] = dist[curr.e]+node.cost;
-						pq.add(new Node(node.e, dist[node.e]));
-					}
-				}
+				if(cost >= dist[next.node]) continue;
+				dist[next.node] = cost;
+				pq.add(new Node(next.node, cost));
 			}
 		}
 		
-		return dist[end];
+		return dist[end]==Integer.MAX_VALUE?-1:dist[end];
 	}
+
 }
